@@ -5,14 +5,15 @@ echo $ROOT
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
-PHP_DIR="nginx_php"
 SRC_SUFFIX=".tar.gz"
 ICONV_SRC="libiconv-1.15"
 ICON_LOCK="$LOCK_DIR/iconv.lock"
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
 PHP_SRC="php-7.1.2"
+PHP_DIR="nginx_$PHP_SRC"
 PHP_LOCK="$LOCK_DIR/php.lock"
+COMMON_LOCK="$LOCK_DIR/common.lock"
 
 # php7.1.2 install function
 # for nginx:
@@ -53,6 +54,7 @@ function install_php {
     [ $? != 0 ] && error_exit "php install err"
     echo  
     echo "install php complete."
+    touch $PHP_LOCK
 }
 
 # libiconv install function
@@ -80,6 +82,7 @@ function install_libiconv {
     rm -fr $ICONV_SRC
     echo 
     echo "install libiconv complete."
+    touch $ICONV_LOCK
 }
 
 # mcrypt install function
@@ -96,6 +99,7 @@ function install_mcrypt {
     [ $? != 0 ] && error_exit "mcrypt make err"
     make install
     [ $? != 0 ] && error_exit "mcrypt install err"
+    #add to active lib
     ldconfig
     cd libltdl
     ./configure --enable-ltdl-install && make && make install
@@ -104,6 +108,23 @@ function install_mcrypt {
     rm -fr $MCRYPT_SRC
     echo 
     echo "install mcrypt complete."
+    touch $MCRYPT_LOCK
+}
+
+# install common depend
+function install_common {
+    [ -f $COMMON_LOCK ] && return
+    # for centos7 start
+    iptables="iptables-services"
+    # end
+    yum install -y gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel \
+        freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel \
+        curl-devel patch libmcrypt-devel libmhash-devel ncurses-devel bzip2 \
+        libcap-devel ntp sysklogd diffutils sendmail iptables zip unzip cmake wget \
+        re2c bison icu libicu libicu-devel net-tools psmisc vim-enhanced \
+        telnet ipset lsof $iptables
+    [ $? != 0 ] && error_exit "common depend install err"
+    touch $COMMON_LOCK
 }
 
 # install error function
@@ -115,4 +136,6 @@ function error_exit {
     exit
 }
 
+install_common
 install_php
+
