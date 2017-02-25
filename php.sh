@@ -2,12 +2,11 @@ ROOT=$(pwd)
 CPUS=`grep processor /proc/cpuinfo | wc -l`
 echo $CPUS
 echo $ROOT
-exit
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
 PHP_DIR="nginx_php"
 SRC_SUFFIX=".tar.gz"
-ICONV_SRC="libiconv-1.14"
+ICONV_SRC="libiconv-1.15"
 MCRYPT_SRC="libmcrypt-2.5.8"
 PHP_SRC="php-7.1.2"
 
@@ -75,6 +74,7 @@ function install_libiconv {
     rm -fr $ICONV_SRC
     echo 
     echo "install libiconv complete."
+    exit
 }
 
 # mcrypt install function
