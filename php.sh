@@ -1,8 +1,9 @@
 ROOT=$(pwd)
 CPUS=`grep processor /proc/cpuinfo | wc -l`
 echo $CPUS
+echo $ROOT
 exit
-INSTALL_DIR="/www"
+INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
 PHP_DIR="nginx_php"
 SRC_SUFFIX=".tar.gz"
