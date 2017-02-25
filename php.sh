@@ -53,6 +53,7 @@ function install_php {
 # libiconv install function
 # iconv_dir=/usr
 function install_libiconv {
+    return
     echo "install libiconv..."
     cd $SRC_DIR
     tar -zxvf $ICONV_SRC$SRC_SUFFIX
@@ -74,7 +75,6 @@ function install_libiconv {
     rm -fr $ICONV_SRC
     echo 
     echo "install libiconv complete."
-    exit
 }
 
 # mcrypt install function
@@ -98,6 +98,7 @@ function install_mcrypt {
     rm -fr $MCRYPT_SRC
     echo 
     echo "install mcrypt complete."
+    exit
 }
 
 # install error function
