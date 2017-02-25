@@ -8,6 +8,8 @@ LOCK_DIR="$ROOT/lock"
 SRC_SUFFIX=".tar.gz"
 ICONV_SRC="libiconv-1.15"
 ICON_LOCK="$LOCK_DIR/iconv.lock"
+MHASH_SRC="mhash-0.9.9.9"
+MHASH_LOCK="$LOCK_DIR/mhash.lock"
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
 PHP_SRC="php-7.1.2"
@@ -18,15 +20,17 @@ COMMON_LOCK="$LOCK_DIR/common.lock"
 # php7.1.2 install function
 # for nginx:
 # --enable-fpm --with-fpm-user=www --with-fpm-group=www
+# no zend guard loader for php7
 function install_php {
     install_libiconv
+    install_mhash
     install_mcrypt
     [ -f $PHP_LOCK ] && return
     echo 
     echo "install php..."
     cd $SRC_DIR
     tar -zxvf $PHP_SRC$SRC_SUFFIX
-    cd php-7.1.2
+    cd $PHP_SRC
     make clean >/dev/null 2>&1
     ./configure --prefix=$INSTALL_DIR/$PHP_DIR \
         --with-config-file-path=$INSTALL_DIR/$PHP_DIR/etc \
@@ -89,6 +93,29 @@ function install_libiconv {
     echo 
     echo "install libiconv complete."
     touch $ICONV_LOCK
+}
+
+# mhash install function
+# mhash_dir=/usr
+function install_mhash {
+    [ -f $MHASH_LOCK ] && return 
+    echo "install mhash..."
+    cd $SRC_DIR
+    tar -zxvf $MHASH_SRC$SRC_SUFFIX
+    cd $MHASH_SRC
+    ./configure --prefix=/usr
+    [ $? != 0 ] && error_exit "mhash configure err"
+    make
+    [ $? != 0 ] && error_exit "mhash make err"
+    make install
+    [ $? != 0 ] && error_exit "mhash install err"
+    #add to active lib
+    ldconfig
+    cd $SRC_DIR
+    rm -fr $MCRYPT_SRC
+    echo 
+    echo "install mcrypt complete."
+    touch $MCRYPT_LOCK
 }
 
 # mcrypt install function
