@@ -108,3 +108,5 @@ function error_exit {
     echo 
     exit
 }
+
+install_php
