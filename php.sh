@@ -4,11 +4,15 @@ echo $CPUS
 echo $ROOT
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
+LOCK_DIR="$ROOT/lock"
 PHP_DIR="nginx_php"
 SRC_SUFFIX=".tar.gz"
 ICONV_SRC="libiconv-1.15"
+ICON_LOCK="$LOCK_DIR/iconv.lock"
 MCRYPT_SRC="libmcrypt-2.5.8"
+MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
 PHP_SRC="php-7.1.2"
+PHP_LOCK="$LOCK_DIR/php.lock"
 
 # php7.1.2 install function
 # for nginx:
@@ -16,6 +20,7 @@ PHP_SRC="php-7.1.2"
 function install_php {
     install_libiconv
     install_mcrypt
+    [ -f $PHP_LOCK ] && return
     echo 
     echo "install php..."
     cd $SRC_DIR
@@ -53,7 +58,7 @@ function install_php {
 # libiconv install function
 # iconv_dir=/usr
 function install_libiconv {
-    return
+    [ -f $ICONV_LOCK ] && return 
     echo "install libiconv..."
     cd $SRC_DIR
     tar -zxvf $ICONV_SRC$SRC_SUFFIX
@@ -80,6 +85,7 @@ function install_libiconv {
 # mcrypt install function
 # mcrypt_dir=/usr
 function install_mcrypt {
+    [ -f $MCRYPT_LOCK ] && return 
     echo "install mcrypt..."
     cd $SRC_DIR
     tar -zxvf $MCRYPT_SRC$SRC_SUFFIX
@@ -98,7 +104,6 @@ function install_mcrypt {
     rm -fr $MCRYPT_SRC
     echo 
     echo "install mcrypt complete."
-    exit
 }
 
 # install error function
