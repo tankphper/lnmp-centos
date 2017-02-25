@@ -124,6 +124,11 @@ function install_common {
         re2c bison icu libicu libicu-devel net-tools psmisc vim-enhanced \
         telnet ipset lsof $iptables
     [ $? != 0 ] && error_exit "common depend install err"
+    # create user for nginx php
+    groupadd -g 1000 www >/dev/null 2>&1
+    # -d to set user home_dir=/www
+    # -s to set user login shell=/sbin/nologin, you also to set /bin/bash
+    useradd -g 1000 -u 1000 -d /www -s /sbin/nologin www >/dev/null 2>&1
     touch $COMMON_LOCK
 }
 
