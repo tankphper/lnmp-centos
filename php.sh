@@ -52,6 +52,12 @@ function install_php {
     [ $? != 0 ] && error_exit "php make err"
     make install
     [ $? != 0 ] && error_exit "php install err"
+    # copy php.ini-production to $PHP_DIR
+    cp php.ini-production $INSTALL_DIR/$PHP_DIR/etc/php.ini
+    # replace config
+    sed -i 's@^short_open_tag = Off@short_open_tag = On@' $INSTALL_DIR/$PHP_DIR/etc/php.ini
+    sed -i 's@^;date.timezone.*@date.timezone = Asia/Shanghai@' $INSTALL_DIR/$PHP_DIR/etc/php.ini
+    
     echo  
     echo "install php complete."
     touch $PHP_LOCK
