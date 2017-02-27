@@ -7,21 +7,28 @@ SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
 SRC_SUFFIX=".tar.gz"
 # dependency of php
+ICONV_DOWN="http://ftp.gnu.org/gnu/libiconv/libiconv-1.15.tar.gz"
 ICONV_SRC="libiconv-1.15"
 ICON_LOCK="$LOCK_DIR/iconv.lock"
+MHASH_DOWN="https://downloads.sourceforge.net/project/mhash/mhash/0.9.9.9/mhash-0.9.9.9.tar.gz"
 MHASH_SRC="mhash-0.9.9.9"
 MHASH_LOCK="$LOCK_DIR/mhash.lock"
+MCRYPT_DOWN="https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz"
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
 # php7 source
+PHP_DOWN="http://cn2.php.net/distributions/php-7.1.2.tar.gz"
 PHP_SRC="php-7.1.2"
 PHP_DIR="nginx_$PHP_SRC"
 PHP_LOCK="$LOCK_DIR/php.lock"
+# common dependency fo php
 COMMON_LOCK="$LOCK_DIR/common.lock"
 # extensions for php
+SWOOLE_DOWN="https://github.com/swoole/swoole-src/archive/v1.9.6.tar.gz"
 SWOOLE_DIR="swoole-src-1.9.6"
 SWOOLE_LOCK="$LOCK_DIR/swoole.lock"
 # above 2.2.8 only for php7
+REDIS_DOWN="https://github.com/phpredis/phpredis/archive/3.1.1.tar.gz"
 REDIS_DIR="phpredis-3.1.1"
 REDIS_LOCK="$LOCK_DIR/phpredis.lock"
 
