@@ -6,16 +6,23 @@ INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
 SRC_SUFFIX=".tar.gz"
+# dependency of php
 ICONV_SRC="libiconv-1.15"
 ICON_LOCK="$LOCK_DIR/iconv.lock"
 MHASH_SRC="mhash-0.9.9.9"
 MHASH_LOCK="$LOCK_DIR/mhash.lock"
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
+# php7 source
 PHP_SRC="php-7.1.2"
 PHP_DIR="nginx_$PHP_SRC"
 PHP_LOCK="$LOCK_DIR/php.lock"
 COMMON_LOCK="$LOCK_DIR/common.lock"
+# extensions for php
+SWOOLE_DIR="swoole-src-1.9.6"
+SWOOLE_LOCK="$LOCK_DIR/swoole.lock"
+REDIS_DIR="phpredis-3.1.1"
+REDIS_LOCK="$LOCK_DIR/phpredis.lock"
 
 # php7.1.2 install function
 # for nginx:
