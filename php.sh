@@ -22,9 +22,10 @@ COMMON_LOCK="$LOCK_DIR/common.lock"
 # --enable-fpm --with-fpm-user=www --with-fpm-group=www
 # no zend guard loader for php7
 function install_php {
-    install_libiconv
-    install_mhash
-    install_mcrypt
+    [ ! -f /usr/include/iconv.h ] && install_libiconv
+    [ ! -f /usr/include/mhash.h ] && install_mhash
+    [ ! -f /usr/include/mcrypt.h ] && install_mcrypt
+    
     [ -f $PHP_LOCK ] && return
     echo 
     echo "install php..."
