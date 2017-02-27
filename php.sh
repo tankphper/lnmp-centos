@@ -21,6 +21,7 @@ COMMON_LOCK="$LOCK_DIR/common.lock"
 # extensions for php
 SWOOLE_DIR="swoole-src-1.9.6"
 SWOOLE_LOCK="$LOCK_DIR/swoole.lock"
+# above 2.2.8 only for php7
 REDIS_DIR="phpredis-3.1.1"
 REDIS_LOCK="$LOCK_DIR/phpredis.lock"
 
@@ -69,6 +70,9 @@ function install_php {
     # replace config
     sed -i 's@^short_open_tag = Off@short_open_tag = On@' $INSTALL_DIR/$PHP_DIR/etc/php.ini
     sed -i 's@^;date.timezone.*@date.timezone = Asia/Shanghai@' $INSTALL_DIR/$PHP_DIR/etc/php.ini
+    rm -fr /usr/local/bin/php /usr/local/bin/phpize
+    ln -sf $INSTALL_DIR/$PHP_DIR/bin/php /usr/local/bin/php
+    ln -sf $INSTALL_DIR/$PHP_DIR/bin/phpize /usr/local/bin/phpize
     
     echo  
     echo "install php complete."
