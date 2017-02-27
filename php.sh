@@ -30,6 +30,8 @@ REDIS_LOCK="$LOCK_DIR/phpredis.lock"
 # --enable-fpm --with-fpm-user=www --with-fpm-group=www
 # no zend guard loader for php7
 function install_php {
+    
+    
     [ ! -f /usr/include/iconv.h ] && install_libiconv
     [ ! -f /usr/include/mhash.h ] && install_mhash
     [ ! -f /usr/include/mcrypt.h ] && install_mcrypt
@@ -67,7 +69,7 @@ function install_php {
     [ $? != 0 ] && error_exit "php install err"
     # copy php.ini-production to $PHP_DIR
     cp php.ini-production $INSTALL_DIR/$PHP_DIR/etc/php.ini
-    # replace config
+    # replace php.ini config
     sed -i 's@^short_open_tag = Off@short_open_tag = On@' $INSTALL_DIR/$PHP_DIR/etc/php.ini
     sed -i 's@^;date.timezone.*@date.timezone = Asia/Shanghai@' $INSTALL_DIR/$PHP_DIR/etc/php.ini
     rm -fr /usr/local/bin/php /usr/local/bin/phpize
@@ -186,6 +188,11 @@ function error_exit {
     exit
 }
 
-install_common
-install_php
+# start install
+function start_install {
+    mkdir -p $LOCK_DIR
+    install_common
+    install_php
+}
 
+start_install
