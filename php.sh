@@ -38,7 +38,6 @@ REDIS_LOCK="$LOCK_DIR/phpredis.lock"
 # no zend guard loader for php7
 function install_php {
     
-    
     [ ! -f /usr/include/iconv.h ] && install_libiconv
     [ ! -f /usr/include/mhash.h ] && install_mhash
     [ ! -f /usr/include/mcrypt.h ] && install_mcrypt

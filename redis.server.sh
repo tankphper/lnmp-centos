@@ -3,6 +3,7 @@ CPUS=`grep processor /proc/cpuinfo | wc -l`
 echo $CPUS
 echo $ROOT
 INSTALL_DIR="/www/server"
+CONF_DIR="$INSTALL_DIR/etc"
 SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
 SRC_SUFFIX=".tar.gz"
@@ -13,6 +14,7 @@ REDIS_DIR="redis-3.2.8"
 REDIS_LOCK="$LOCK_DIR/redis.lock"
 
 # redis-3.2.8 install function
+# default dir /usr/local/bin
 function install_redis {
     [ -f $REDIS_LOCK ] && return
     echo 
@@ -26,23 +28,25 @@ function install_redis {
     [ $? != 0 ] && error_exit "redis make err"
     make install
     [ $? != 0 ] && error_exit "redis install err"
-    # copy
+    # replace config
     sed -i 's@^daemonize no@daemonize yes@' redis.conf
     sed -i 's@^protected-mode yes@protected-mode no@' redis.conf
     sed -i 's@^bind 127.0.0.1@#bind 127.0.0.1@' redis.conf
     sed -i 's@^# requirepass foobared@requirepass redis!-!pass@' redis.conf
-    ln -sf redis.conf $INSTALL_DIR/etc/redis.conf
-    # set to auto start
-    cp utils/redis_init_script /etc/rc.d/init.d/redis
-    sed -i '1c/# chkconfig: 2345 80 90' /etc/rc.d/init.d/redis 
-    sed -i 's@^CONF="/etc/redis/${REDISPORT}.conf"@CONF="/www/server/etc/redis.conf"@' /etc/rc.d/init.d/redis 
-    sed -i 's@^$EXEC $CONF@$EXEC $CONF &@' /etc/rc.d/init.d/redis 
+    [ ! -d $CONF_DIR ] && mkdir -p $CONF_DIR
+    ln -sf redis.conf $CONF_DIR/redis.conf
+    # copy auto start script
+    auto_start_dir="/etc/rc.d/init.d"
+    cp utils/redis_init_script $auto_start_dir/redis
+    sed -i '1c/# chkconfig: 2345 80 90' $auto_start_dir/redis 
+    sed -i 's@^CONF="/etc/redis/${REDISPORT}.conf"@CONF="/www/server/etc/redis.conf"@' $auto_start_dir/redis 
+    sed -i 's@^$EXEC $CONF@$EXEC $CONF \&@' $auto_start_dir/redis 
     # chkconfig and start
     chkconfig --add redis
     service redis start 
     echo  
     echo "install redis complete."
-    touch $PHP_LOCK
+    touch $REDIS_LOCK
 }
 
 # install common dependency
