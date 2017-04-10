@@ -196,7 +196,7 @@ function error_exit {
 
 # start install
 function start_install {
-    mkdir -p $LOCK_DIR
+    [ ! -d $LOCK_DIR ] && mkdir -p $LOCK_DIR
     install_common
     install_php
 }
