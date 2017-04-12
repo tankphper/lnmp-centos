@@ -33,7 +33,7 @@ function install_redis {
     sed -i 's@^daemonize no@daemonize yes@' $CONF_DIR/redis.conf
     sed -i 's@^protected-mode yes@protected-mode no@' $CONF_DIR/redis.conf
     sed -i 's@^bind 127.0.0.1@#bind 127.0.0.1@' $CONF_DIR/redis.conf
-    sed -i 's@^# requirepass foobared@requirepass redis!-!pass@' $CONF_DIR/redis.conf
+    sed -i 's@^# requirepass foobared@requirepass zhoumanzi@' $CONF_DIR/redis.conf
     # copy auto start script
     auto_start_dir="/etc/rc.d/init.d"
     cp utils/redis_init_script $auto_start_dir/redis
@@ -66,6 +66,7 @@ function error_exit {
 function start_install {
     [ ! -d $LOCK_DIR ] && mkdir -p $LOCK_DIR
     [ ! -d $CONF_DIR ] && mkdir -p $CONF_DIR
+    service redis stop
     install_common
     install_redis
 }
