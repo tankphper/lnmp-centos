@@ -17,8 +17,8 @@ MCRYPT_DOWN="https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/li
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
 # php7 source
-PHP_DOWN="http://cn2.php.net/distributions/php-7.1.2.tar.gz"
-PHP_SRC="php-7.1.2"
+PHP_DOWN="http://cn2.php.net/distributions/php-7.1.5.tar.gz"
+PHP_SRC="php-7.1.5"
 PHP_DIR="nginx_$PHP_SRC"
 PHP_LOCK="$LOCK_DIR/php.lock"
 # common dependency fo php
