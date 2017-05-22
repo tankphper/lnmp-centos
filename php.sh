@@ -1,7 +1,9 @@
 ROOT=$(pwd)
 CPUS=`grep processor /proc/cpuinfo | wc -l`
-echo $CPUS
+grep -q "release 7" /etc/redhat-release && R7=1 || R7=0
 echo $ROOT
+echo $CPUS
+echo $R7
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
@@ -48,7 +50,7 @@ function install_php {
     cd $SRC_DIR
     tar -zxvf $PHP_SRC$SRC_SUFFIX
     cd $PHP_SRC
-    make clean >/dev/null 2>&1
+    make clean > /dev/null 2>&1
     ./configure --prefix=$INSTALL_DIR/$PHP_DIR \
         --with-config-file-path=$INSTALL_DIR/$PHP_DIR/etc \
         --enable-mysqlnd --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
@@ -78,7 +80,6 @@ function install_php {
     # replace php.ini config
     sed -i 's@^short_open_tag = Off@short_open_tag = On@' $INSTALL_DIR/$PHP_DIR/etc/php.ini
     sed -i 's@^;date.timezone.*@date.timezone = Asia/Shanghai@' $INSTALL_DIR/$PHP_DIR/etc/php.ini
-    rm -fr /usr/local/bin/php /usr/local/bin/phpize
     ln -sf $INSTALL_DIR/$PHP_DIR/bin/php /usr/local/bin/php
     ln -sf $INSTALL_DIR/$PHP_DIR/bin/phpize /usr/local/bin/phpize
     
@@ -133,6 +134,7 @@ function install_mhash {
     ldconfig
     cd $SRC_DIR
     rm -fr $MCRYPT_SRC
+    
     echo 
     echo "install mcrypt complete."
     touch $MCRYPT_LOCK
@@ -159,12 +161,14 @@ function install_mcrypt {
     [ $? != 0 ] && error_exit "mcrypt ltdl install err"
     cd $SRC_DIR
     rm -fr $MCRYPT_SRC
+    
     echo 
     echo "install mcrypt complete."
     touch $MCRYPT_LOCK
 }
 
 # install common dependency
+# ifconfig command depend net-tools
 # php user:group is www:www
 function install_common {
     [ -f $COMMON_LOCK ] && return

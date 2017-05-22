@@ -29,7 +29,7 @@ function install_nginx {
     cd $SRC_DIR
     tar -zxvf $NGINX_SRC$SRC_SUFFIX
     cd $NGINX_SRC
-    make clean >/dev/null 2>&1
+    make clean > /dev/null 2>&1
     sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' auto/cc/gcc
     ./configure --user=www --group=www \
         --prefix=$INSTALL_DIR/$NGINX_DIR \
