@@ -52,11 +52,11 @@ function install_nginx {
     cp $ROOT/nginx.conf/nginx.conf $INSTALL_DIR/nginx/conf/nginx.conf
     cp $ROOT/nginx.conf/thinkphp.conf $INSTALL_DIR/nginx/conf/rewrite/thinkphp.conf
     # auto start script for centos7
-    cp $ROOT/nginx.conf/init.nginxd.R7 /usr/lib/systemd/system/
+    cp $ROOT/nginx.conf/init.nginxd.R7 /usr/lib/systemd/system/nginxd.service
+    systemctl start nginx.service
+    systemctl enable nginxd.service
     # auto start script for centos6
-    cp $ROOT/nginx.conf/init.nginxd.R6 /etc/init.d/nginxd
-    # auto start for centos7
-    system enable nginxd
+    # cp $ROOT/nginx.conf/init.nginxd.R6 /etc/init.d/nginxd
     # auto start for centos6
     # chkconfig --add nginxd
     # chkconfig --level 35 nginxd on
