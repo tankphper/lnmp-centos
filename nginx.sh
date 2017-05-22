@@ -48,12 +48,11 @@ function install_nginx {
     mkdir -p $INSTALL_DIR/nginx/conf/{vhost,rewrite}
     mkdir -p /www/web/default
     chown -hR www:www /www/web
-    # bakup fastcgi.conf to fcgi.conf 
-    cp $INSTALL_DIR/nginx/conf/fastcgi.conf $INSTALL_DIR/nginx/conf/fcgi.conf
-    cp ./nginx.conf/nginx.conf $INSTALL_DIR/nginx/conf/nginx.conf
-    cp ./nginx.conf/thinkphp.conf $INSTALL_DIR/nginx/conf/rewrite/thinkphp.conf
+    # cp default conf and tp rewrite rule 
+    cp $ROOT/nginx.conf/nginx.conf $INSTALL_DIR/nginx/conf/nginx.conf
+    cp $ROOT/nginx.conf/thinkphp.conf $INSTALL_DIR/nginx/conf/rewrite/thinkphp.conf
     # auto start script
-    cp ./nginx.conf/init.nginxd $INSTALL_DIR/init.d/nginxd
+    cp $ROOT/nginx.conf/init.nginxd $INSTALL_DIR/init.d/nginxd
     chmod 755 $INSTALL_DIR/init.d/nginxd
     ln -s $INSTALL_DIR/init.d/nginxd /etc/init.d/nginxd
     # auto start
