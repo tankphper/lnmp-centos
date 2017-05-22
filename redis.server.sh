@@ -10,10 +10,10 @@ SRC_SUFFIX=".tar.gz"
 # redis server source
 REDIS_DOWN="http://download.redis.io/releases/redis-3.2.8.tar.gz"
 REDIS_SRC="redis-3.2.8"
-REDIS_DIR="redis-3.2.8"
+REDIS_DIR="$REDIS_SRC"
 REDIS_LOCK="$LOCK_DIR/redis.lock"
 
-# redis-3.2.8 install function
+# redis install function
 # default dir /usr/local/bin
 function install_redis {
     [ -f $REDIS_LOCK ] && return

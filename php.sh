@@ -19,7 +19,7 @@ MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
 # php7 source
 PHP_DOWN="http://cn2.php.net/distributions/php-7.1.5.tar.gz"
 PHP_SRC="php-7.1.5"
-PHP_DIR="nginx_$PHP_SRC"
+PHP_DIR="$PHP_SRC"
 PHP_LOCK="$LOCK_DIR/php.lock"
 # common dependency fo php
 COMMON_LOCK="$LOCK_DIR/common.lock"
@@ -28,8 +28,8 @@ SWOOLE_DOWN="https://github.com/swoole/swoole-src/archive/v1.9.6.tar.gz"
 SWOOLE_DIR="swoole-src-1.9.6"
 SWOOLE_LOCK="$LOCK_DIR/swoole.lock"
 # above 2.2.8 only for php7
-REDIS_DOWN="https://github.com/phpredis/phpredis/archive/3.1.1.tar.gz"
-REDIS_DIR="phpredis-3.1.1"
+REDIS_DOWN="https://github.com/phpredis/phpredis/archive/3.1.2.tar.gz"
+REDIS_DIR="phpredis-3.1.2"
 REDIS_LOCK="$LOCK_DIR/phpredis.lock"
 
 # php-7.1.5 install function

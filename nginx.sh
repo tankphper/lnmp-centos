@@ -15,12 +15,12 @@ PCRE_LOCK="$LOCK_DIR/pcre.lock"
 # nginx source
 NGINX_DOWN="http://nginx.org/download/nginx-1.12.0.tar.gz"
 NGINX_SRC="nginx-1.12.0"
-NGINX_DIR="nginx-1.12.0"
+NGINX_DIR="$NGINX_SRC"
 NGINX_LOCK="$LOCK_DIR/nginx.lock"
 # common dependency fo nginx
 COMMON_LOCK="$LOCK_DIR/common.lock"
 
-# nginx-1.12.0 install function
+# nginx install function
 function install_nginx {
     
     [ -f $NGINX_LOCK ] && return
@@ -44,7 +44,7 @@ function install_nginx {
     [ $? != 0 ] && error_exit "nginx make err"
     make install
     [ $? != 0 ] && error_exit "nginx install err"
-    ln -s $INSTALL_DIR/$NGINX_SRC $INSTALL_DIR/nginx
+    [ ! -L $INSTALL_DIR/nginx ] && ln -s $INSTALL_DIR/$NGINX_SRC $INSTALL_DIR/nginx
     mkdir -p $INSTALL_DIR/nginx/conf/{vhost,rewrite}
     mkdir -p /www/web/default
     chown -hR www:www /www/web
@@ -52,14 +52,16 @@ function install_nginx {
     cp $ROOT/nginx.conf/nginx.conf $INSTALL_DIR/nginx/conf/nginx.conf
     cp $ROOT/nginx.conf/thinkphp.conf $INSTALL_DIR/nginx/conf/rewrite/thinkphp.conf
     # auto start script for centos7
-    cp $ROOT/nginx.conf/init.nginxd.R7 /usr/lib/systemd/system/nginxd.service
-    systemctl start nginx.service
+    cp $ROOT/nginx.conf/nginx.init.R7 /usr/lib/systemd/system/nginxd.service
+    systemctl daemon-reload
     systemctl enable nginxd.service
+    systemctl start nginxd.service
     # auto start script for centos6
-    # cp $ROOT/nginx.conf/init.nginxd.R6 /etc/init.d/nginxd
+    # cp $ROOT/nginx.conf/nginx.init.R6 /etc/init.d/nginxd
     # auto start for centos6
     # chkconfig --add nginxd
     # chkconfig --level 35 nginxd on
+    # service nginxd start
     
     echo  
     echo "install nginx complete."
