@@ -1,7 +1,5 @@
-# nginx auto start init file
-# service description
 [Unit]
-Description=nginx - high performance web server
+Description=Nginx - high performance web server
 Documentation=http://nginx.org/en/docs/
 After=network.target remote-fs.target nss-lookup.target
 # service config
