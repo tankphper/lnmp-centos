@@ -96,17 +96,18 @@ function install_pcre {
 # install common dependency
 # nginx gzip depend zlib zlib-devel
 # nginx ssl depend openssl openssl-devel
-# nginx image_filter denpend gd-devel
+# nginx image_filter module denpend gd gd-devel
 # nginx user:group is www:www
 function install_common {
     [ -f $COMMON_LOCK ] && return
     # for centos7
     iptables="iptables-services"
-    yum install -y gcc gcc-c++ make cmake autoconf automake sudo wget zlib zlib-devel openssl openssl-devel \
+    yum install -y gcc gcc-c++ make cmake autoconf automake sudo wget \
+        zlib zlib-devel openssl openssl-devel gd gd-devel \
         telnet ipset lsof $iptables
     [ $? != 0 ] && error_exit "common dependence install err"
     # create user for nginx and php
-    groupadd -g 1000 www >/dev/null 2>&1
+    groupadd -g 1000 www > /dev/null 2>&1
     # -d to set user home_dir=/www
     # -s to set user login shell=/sbin/nologin, you also to set /bin/bash
     useradd -g 1000 -u 1000 -d /www -s /sbin/nologin www >/dev/null 2>&1
