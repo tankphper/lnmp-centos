@@ -51,14 +51,15 @@ function install_nginx {
     # cp default conf and tp rewrite rule 
     cp $ROOT/nginx.conf/nginx.conf $INSTALL_DIR/nginx/conf/nginx.conf
     cp $ROOT/nginx.conf/thinkphp.conf $INSTALL_DIR/nginx/conf/rewrite/thinkphp.conf
-    # auto start script
-    cp $ROOT/nginx.conf/init.nginxd $INSTALL_DIR/init.d/nginxd
-    chmod 755 $INSTALL_DIR/init.d/nginxd
-    ln -s $INSTALL_DIR/init.d/nginxd /etc/init.d/nginxd
-    # auto start
-    chkconfig --add nginxd
-    chkconfig --level 35 nginxd on
-
+    # auto start script for centos7
+    cp $ROOT/nginx.conf/init.nginxd.R7 /usr/lib/systemd/system/
+    # auto start script for centos6
+    cp $ROOT/nginx.conf/init.nginxd.R6 /etc/init.d/nginxd
+    # auto start for centos7
+    system enable nginxd
+    # auto start for centos6
+    # chkconfig --add nginxd
+    # chkconfig --level 35 nginxd on
     
     echo  
     echo "install nginx complete."
