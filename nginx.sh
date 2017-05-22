@@ -46,7 +46,7 @@ function install_nginx {
     [ $? != 0 ] && error_exit "nginx install err"
     ln -s $INSTALL_DIR/$NGINX_SRC $INSTALL_DIR/nginx
     mkdir -p $INSTALL_DIR/nginx/conf/{vhost,rewrite}
-    mkdir -p /www/{web/default}
+    mkdir -p /www/web/default
     chown -hR www:www /www/web
     # bakup fastcgi.conf to fcgi.conf 
     cp $INSTALL_DIR/nginx/conf/fastcgi.conf $INSTALL_DIR/nginx/conf/fcgi.conf
