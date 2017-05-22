@@ -9,7 +9,7 @@ SRC_SUFFIX=".tar.gz"
 # dependency of php
 ICONV_DOWN="http://ftp.gnu.org/gnu/libiconv/libiconv-1.15.tar.gz"
 ICONV_SRC="libiconv-1.15"
-ICON_LOCK="$LOCK_DIR/iconv.lock"
+ICONV_LOCK="$LOCK_DIR/iconv.lock"
 MHASH_DOWN="https://downloads.sourceforge.net/project/mhash/mhash/0.9.9.9/mhash-0.9.9.9.tar.gz"
 MHASH_SRC="mhash-0.9.9.9"
 MHASH_LOCK="$LOCK_DIR/mhash.lock"
@@ -32,7 +32,7 @@ REDIS_DOWN="https://github.com/phpredis/phpredis/archive/3.1.1.tar.gz"
 REDIS_DIR="phpredis-3.1.1"
 REDIS_LOCK="$LOCK_DIR/phpredis.lock"
 
-# php7.1.2 install function
+# php-7.1.5 install function
 # for nginx:
 # --enable-fpm --with-fpm-user=www --with-fpm-group=www
 # no zend guard loader for php7
@@ -164,19 +164,19 @@ function install_mcrypt {
     touch $MCRYPT_LOCK
 }
 
-# install common depend
+# install common dependency
+# php user:group is www:www
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    # for centos7 start
+    # for centos7
     iptables="iptables-services"
-    # end
     yum install -y gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel \
         freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel \
         curl-devel patch libmcrypt-devel libmhash-devel ncurses-devel bzip2 \
         libcap-devel ntp sysklogd diffutils sendmail iptables zip unzip cmake wget \
         re2c bison icu libicu libicu-devel net-tools psmisc vim-enhanced \
         telnet ipset lsof $iptables
-    [ $? != 0 ] && error_exit "common depend install err"
+    [ $? != 0 ] && error_exit "common dependency install err"
     # create user for nginx php
     groupadd -g 1000 www >/dev/null 2>&1
     # -d to set user home_dir=/www
