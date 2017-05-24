@@ -31,21 +31,29 @@ function install_redis {
     make install
     [ $? != 0 ] && error_exit "redis install err"
     # copy to default conf dir
-    cp redis.conf $CONF_DIR/redis.conf
+    cp -f redis.conf $CONF_DIR/redis.conf
     # config redis
     sed -i 's@^daemonize no@daemonize yes@' $CONF_DIR/redis.conf
     sed -i 's@^protected-mode yes@protected-mode no@' $CONF_DIR/redis.conf
     sed -i 's@^bind 127.0.0.1@#bind 127.0.0.1@' $CONF_DIR/redis.conf
     sed -i 's@^# requirepass foobared@requirepass zhoumanzi@' $CONF_DIR/redis.conf
-    # copy auto start script
-    auto_start_dir="/etc/rc.d/init.d"
-    cp utils/redis_init_script $auto_start_dir/redis
-    sed -i '1a# chkconfig: 2345 80 90' $auto_start_dir/redis 
-    sed -i 's@^CONF="/etc/redis/${REDISPORT}.conf"@CONF="/www/server/etc/redis.conf"@' $auto_start_dir/redis 
-    sed -i 's@$EXEC $CONF@$EXEC $CONF \&@' $auto_start_dir/redis 
-    # chkconfig and start
-    chkconfig --add redis
-    service redis start
+    if [ $R7 == 1 ] then
+        cp $ROOT/redis.server.conf/redis.init.R7 /usr/lib/systemd/system/redis.service 
+        systemctl daemon-reload
+        systemctl enable redis.service
+        systemctl start redis.service
+    else
+        # copy auto start script
+        auto_start_dir="/etc/rc.d/init.d"
+        cp -f utils/redis_init_script $auto_start_dir/redis
+        sed -i '1a# chkconfig: 2345 80 90' $auto_start_dir/redis 
+        sed -i 's@^PIDFILE=/var/run/redis_${REDISPORT}.pid@PIDFILE=/var/run/redis.pid@' $auto_start_dir/redis
+        sed -i 's@^CONF="/etc/redis/${REDISPORT}.conf"@CONF="/www/server/etc/redis.conf"@' $auto_start_dir/redis 
+        sed -i 's@$EXEC $CONF@$EXEC $CONF \&@' $auto_start_dir/redis 
+        # chkconfig and start
+        chkconfig --add redis
+        service redis start
+    fi
      
     echo  
     echo "install redis complete."
@@ -70,7 +78,6 @@ function error_exit {
 function start_install {
     [ ! -d $LOCK_DIR ] && mkdir -p $LOCK_DIR
     [ ! -d $CONF_DIR ] && mkdir -p $CONF_DIR
-    service redis stop
     install_common
     install_redis
 }
