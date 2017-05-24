@@ -18,7 +18,7 @@ NGINX_SRC="nginx-1.12.0"
 NGINX_DIR="$NGINX_SRC"
 NGINX_LOCK="$LOCK_DIR/nginx.lock"
 # common dependency fo nginx
-COMMON_LOCK="$LOCK_DIR/common.lock"
+COMMON_LOCK="$LOCK_DIR/nginx.common.lock"
 
 # nginx install function
 function install_nginx {
@@ -110,7 +110,7 @@ function install_common {
     groupadd -g 1000 www > /dev/null 2>&1
     # -d to set user home_dir=/www
     # -s to set user login shell=/sbin/nologin, you also to set /bin/bash
-    useradd -g 1000 -u 1000 -d /www -s /sbin/nologin www >/dev/null 2>&1
+    useradd -g 1000 -u 1000 -d /www -s /sbin/nologin www > /dev/null 2>&1
    
     echo 
     echo "install common dependency complete."
