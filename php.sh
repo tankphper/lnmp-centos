@@ -75,13 +75,34 @@ function install_php {
     [ $? != 0 ] && error_exit "php make err"
     make install
     [ $? != 0 ] && error_exit "php install err"
+    # php link dir
+    ln -sf $INSTALL_DIR/$PHP_DIR $INSTALL_DIR/php
     # copy php.ini-production to $PHP_DIR
-    cp php.ini-production $INSTALL_DIR/$PHP_DIR/etc/php.ini
+    cp php.ini-production $INSTALL_DIR/php/etc/php.ini
     # replace php.ini config
-    sed -i 's@^short_open_tag = Off@short_open_tag = On@' $INSTALL_DIR/$PHP_DIR/etc/php.ini
-    sed -i 's@^;date.timezone.*@date.timezone = Asia/Shanghai@' $INSTALL_DIR/$PHP_DIR/etc/php.ini
-    ln -sf $INSTALL_DIR/$PHP_DIR/bin/php /usr/local/bin/php
-    ln -sf $INSTALL_DIR/$PHP_DIR/bin/phpize /usr/local/bin/phpize
+    sed -i 's@^short_open_tag = Off@short_open_tag = On@' $INSTALL_DIR/php/etc/php.ini
+    sed -i 's@^;date.timezone.*@date.timezone = Asia/Shanghai@' $INSTALL_DIR/php/etc/php.ini
+    ln -sf $INSTALL_DIR/php/bin/php /usr/local/bin/php
+    ln -sf $INSTALL_DIR/php/bin/phpize /usr/local/bin/phpize
+    # php version
+    php -v | grep -q "PHP 7" && V7=1 || V7=0
+    if [ $V7 == 1 ]
+    then
+        cp -f $INSTALL_DIR/php/etc/php-fpm.conf.default $INSTALL_DIR/php/etc/php-fpm.conf
+        cp -f $INSTALL_DIR/php/etc/php-fpm.d/www.conf.default $INSTALL_DIR/php/etc/php-fpm.d/www.conf
+    else
+        echo 'php 6'
+    fi
+    # for php-fpm
+    if [ $R7 == 1 ]
+    then
+        cp -f sapi/fpm/php-fpm.service /usr/lib/systemd/system/
+        systemctl daemon-reload
+        systemctl start php-fpm.service
+        systemctl enable php-fpm.service
+    else
+       echo 'centos 6 ...' 
+    fi
     
     echo  
     echo "install php complete."

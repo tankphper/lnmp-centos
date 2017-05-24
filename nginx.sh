@@ -44,7 +44,7 @@ function install_nginx {
     [ $? != 0 ] && error_exit "nginx make err"
     make install
     [ $? != 0 ] && error_exit "nginx install err"
-    [ ! -L $INSTALL_DIR/nginx ] && ln -s $INSTALL_DIR/$NGINX_SRC $INSTALL_DIR/nginx
+    ln -sf $INSTALL_DIR/$NGINX_SRC $INSTALL_DIR/nginx
     mkdir -p $INSTALL_DIR/nginx/conf/{vhost,rewrite}
     # default web dir
     chown -hR www:www /www/web
