@@ -1,7 +1,9 @@
 ROOT=$(pwd)
 CPUS=`grep processor /proc/cpuinfo | wc -l`
-echo $CPUS
+grep -q "release 7" /etc/redhat-release && R7=1 || R7=0
 echo $ROOT
+echo $CPUS
+echo $R7
 INSTALL_DIR="/www/server"
 CONF_DIR="$INSTALL_DIR/etc"
 SRC_DIR="$ROOT/src"
@@ -11,25 +13,26 @@ SRC_SUFFIX=".tar.gz"
 REDIS_DOWN="http://download.redis.io/releases/redis-3.2.8.tar.gz"
 REDIS_SRC="redis-3.2.8"
 REDIS_DIR="$REDIS_SRC"
-REDIS_LOCK="$LOCK_DIR/redis.lock"
+REDIS_LOCK="$LOCK_DIR/redis.server.lock"
 
 # redis install function
 # default dir /usr/local/bin
 function install_redis {
     [ -f $REDIS_LOCK ] && return
-    echo 
+    
     echo "install redis..."
     cd $SRC_DIR
     [ ! -f $SRC_DIR/$REDIS_SRC$SRC_SUFFIX ] && wget $REDIS_DOWN
     tar -zxvf $REDIS_SRC$SRC_SUFFIX
     cd $REDIS_SRC
-    make clean >/dev/null 2>&1
+    make clean > /dev/null 2>&1
     make
     [ $? != 0 ] && error_exit "redis make err"
     make install
     [ $? != 0 ] && error_exit "redis install err"
+    # copy to default conf dir
     cp redis.conf $CONF_DIR/redis.conf
-    # replace config
+    # config redis
     sed -i 's@^daemonize no@daemonize yes@' $CONF_DIR/redis.conf
     sed -i 's@^protected-mode yes@protected-mode no@' $CONF_DIR/redis.conf
     sed -i 's@^bind 127.0.0.1@#bind 127.0.0.1@' $CONF_DIR/redis.conf
@@ -42,7 +45,8 @@ function install_redis {
     sed -i 's@$EXEC $CONF@$EXEC $CONF \&@' $auto_start_dir/redis 
     # chkconfig and start
     chkconfig --add redis
-    service redis start 
+    service redis start
+     
     echo  
     echo "install redis complete."
     touch $REDIS_LOCK
