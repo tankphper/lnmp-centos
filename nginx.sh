@@ -46,22 +46,27 @@ function install_nginx {
     [ $? != 0 ] && error_exit "nginx install err"
     [ ! -L $INSTALL_DIR/nginx ] && ln -s $INSTALL_DIR/$NGINX_SRC $INSTALL_DIR/nginx
     mkdir -p $INSTALL_DIR/nginx/conf/{vhost,rewrite}
-    mkdir -p /www/web/default
+    # default web dir
     chown -hR www:www /www/web
     # cp default conf and tp rewrite rule 
-    cp $ROOT/nginx.conf/nginx.conf $INSTALL_DIR/nginx/conf/nginx.conf
-    cp $ROOT/nginx.conf/thinkphp.conf $INSTALL_DIR/nginx/conf/rewrite/thinkphp.conf
-    # auto start script for centos7
-    cp $ROOT/nginx.conf/nginx.init.R7 /usr/lib/systemd/system/nginxd.service
-    systemctl daemon-reload
-    systemctl enable nginxd.service
-    systemctl start nginxd.service
-    # auto start script for centos6
-    # cp $ROOT/nginx.conf/nginx.init.R6 /etc/init.d/nginxd
-    # auto start for centos6
-    # chkconfig --add nginxd
-    # chkconfig --level 35 nginxd on
-    # service nginxd start
+    cp -f $ROOT/nginx.conf/nginx.conf $INSTALL_DIR/nginx/conf/nginx.conf
+    cp -f $ROOT/nginx.conf/thinkphp.conf $INSTALL_DIR/nginx/conf/rewrite/thinkphp.conf
+    if [ $R7 == 1 ]
+    then
+        # auto start script for centos7
+        cp -f $ROOT/nginx.conf/nginx.init.R7 /usr/lib/systemd/system/nginxd.service
+        systemctl daemon-reload
+        systemctl start nginxd.service
+        # auto start when start system 
+        systemctl enable nginxd.service
+    else
+        # auto start script for centos6
+        cp -f $ROOT/nginx.conf/nginx.init.R6 /etc/init.d/nginxd
+        # auto start when start system
+        chkconfig --add nginxd
+        chkconfig --level 35 nginxd on
+        service nginxd start
+    fi
     
     echo  
     echo "install nginx complete."

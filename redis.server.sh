@@ -37,18 +37,23 @@ function install_redis {
     sed -i 's@^protected-mode yes@protected-mode no@' $CONF_DIR/redis.conf
     sed -i 's@^bind 127.0.0.1@#bind 127.0.0.1@' $CONF_DIR/redis.conf
     sed -i 's@^# requirepass foobared@requirepass zhoumanzi@' $CONF_DIR/redis.conf
-    if [ $R7 == 1 ] then
+    sed -i 's@^dbfilename dump.rdb@dbfilename redis.rdb@' $CONF_DIR/redis.conf
+    mkdir -p /www/data
+    sed -i 's@^dir ./@dir /www/data/@' $CONF_DIR/redis.conf
+    if [ $R7 == 1 ]
+    then
+        # auto start script for centos7
         cp $ROOT/redis.server.conf/redis.init.R7 /usr/lib/systemd/system/redis.service 
         systemctl daemon-reload
-        systemctl enable redis.service
         systemctl start redis.service
+        # auto start when start system
+        systemctl enable redis.service
     else
-        # copy auto start script
+        # auto start script for centos6
         auto_start_dir="/etc/rc.d/init.d"
         cp -f utils/redis_init_script $auto_start_dir/redis
         sed -i '1a# chkconfig: 2345 80 90' $auto_start_dir/redis 
-        sed -i 's@^PIDFILE=/var/run/redis_${REDISPORT}.pid@PIDFILE=/var/run/redis.pid@' $auto_start_dir/redis
-        sed -i 's@^CONF="/etc/redis/${REDISPORT}.conf"@CONF="/www/server/etc/redis.conf"@' $auto_start_dir/redis 
+        sed -i 's@^CONF="/etc/redis/${REDISPORT}.conf"@CONF="/www/server/etc/redis_${REDISPORT}.conf"@' $auto_start_dir/redis 
         sed -i 's@$EXEC $CONF@$EXEC $CONF \&@' $auto_start_dir/redis 
         # chkconfig and start
         chkconfig --add redis
