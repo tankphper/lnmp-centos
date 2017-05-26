@@ -104,11 +104,11 @@ function install_mysql {
 }
 
 # install common dependency
-# mysql compile need boost default dir=/
+# mysql compile need boost default dir=/usr/share/doc/boost-1.53.0
 # mysql user:group is mysql:mysql
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    yum install -y install gcc gcc-c++ cmake ncurses ncurses-devel bison bison-devel boost
+    yum install -y install gcc gcc-c++ cmake ncurses ncurses-devel bison bison-devel
     [ $? != 0 ] && error_exit "common dependence install err"
     # create user for mysql
     groupadd -g 27 mysql > /dev/null 2>&1
