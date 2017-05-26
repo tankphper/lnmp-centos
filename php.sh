@@ -45,9 +45,10 @@ function install_php {
     [ ! -f /usr/include/mcrypt.h ] && install_mcrypt
     
     [ -f $PHP_LOCK ] && return
-    echo 
+    
     echo "install php..."
     cd $SRC_DIR
+    [ ! -f $PHP_SRC$SRC_SUFFIX ] && wget $PHP_DOWN
     tar -zxvf $PHP_SRC$SRC_SUFFIX
     cd $PHP_SRC
     make clean > /dev/null 2>&1
@@ -114,9 +115,11 @@ function install_php {
 # libiconv install function
 # iconv_dir=/usr
 function install_libiconv {
-    [ -f $ICONV_LOCK ] && return 
+    [ -f $ICONV_LOCK ] && return
+     
     echo "install libiconv..."
     cd $SRC_DIR
+    [ ! -f $ICONV_SRC$SRC_SUFFIX ] && wget $ICONV_DOWN
     tar -zxvf $ICONV_SRC$SRC_SUFFIX
     cd $ICONV_SRC
     # for centos7 start
@@ -130,7 +133,7 @@ function install_libiconv {
     [ $? != 0 ] && error_exit "libiconv make err"
     make install
     [ $? != 0 ] && error_exit "libiconv install err"
-    #add to active lib
+    # refresh active lib
     ldconfig
     cd $SRC_DIR
     rm -fr $ICONV_SRC
@@ -142,9 +145,11 @@ function install_libiconv {
 # mhash install function
 # mhash_dir=/usr
 function install_mhash {
-    [ -f $MHASH_LOCK ] && return 
+    [ -f $MHASH_LOCK ] && return
+     
     echo "install mhash..."
     cd $SRC_DIR
+    [ ! -f $MHASH_SRC$SRC_SUFFIX ] && wget $MHASH_DOWN
     tar -zxvf $MHASH_SRC$SRC_SUFFIX
     cd $MHASH_SRC
     ./configure --prefix=/usr
@@ -166,9 +171,11 @@ function install_mhash {
 # mcrypt install function
 # mcrypt_dir=/usr
 function install_mcrypt {
-    [ -f $MCRYPT_LOCK ] && return 
+    [ -f $MCRYPT_LOCK ] && return
+     
     echo "install mcrypt..."
     cd $SRC_DIR
+    [ ! -f $MCRYPT_SRC$SRC_SUFFIX ] && wget $MCRYPT_DOWN
     tar -zxvf $MCRYPT_SRC$SRC_SUFFIX
     cd $MCRYPT_SRC
     ./configure --prefix=/usr
@@ -177,7 +184,7 @@ function install_mcrypt {
     [ $? != 0 ] && error_exit "mcrypt make err"
     make install
     [ $? != 0 ] && error_exit "mcrypt install err"
-    #add to active lib
+    # refresh active lib
     ldconfig
     cd libltdl
     ./configure --enable-ltdl-install && make && make install
@@ -205,7 +212,7 @@ function install_common {
         telnet ipset lsof $iptables
     [ $? != 0 ] && error_exit "common dependency install err"
     # create user for nginx php
-    groupadd -g 1000 www >/dev/null 2>&1
+    groupadd -g 1000 www > /dev/null 2>&1
     # -d to set user home_dir=/www
     # -s to set user login shell=/sbin/nologin, you also to set /bin/bash
     useradd -g 1000 -u 1000 -d /www -s /sbin/nologin www >/dev/null 2>&1

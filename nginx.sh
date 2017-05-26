@@ -22,11 +22,11 @@ COMMON_LOCK="$LOCK_DIR/nginx.common.lock"
 
 # nginx install function
 function install_nginx {
-    
     [ -f $NGINX_LOCK ] && return
-    echo 
-    echo "install php..."
+     
+    echo "install nginx..."
     cd $SRC_DIR
+    [ ! -f $NGINX_SRC$SRC_SUFFIX ] && wget $NGINX_DOWN
     tar -zxvf $NGINX_SRC$SRC_SUFFIX
     cd $NGINX_SRC
     make clean > /dev/null 2>&1
@@ -78,8 +78,10 @@ function install_nginx {
 # pcre_dir=/usr
 function install_pcre {
     [ -f $PCRE_LOCK ] && return
+    
     echo "install pcre..."
     cd $SRC_DIR
+    [ ! -f $PCRE_SRC$SRC_SUFFIX ] && wget $PCRE_DOWN
     tar -zxvf $PCRE_SRC$SRC_SUFFIX
     cd $PCRE_SRC
     ./configure --prefix=/usr
@@ -88,7 +90,7 @@ function install_pcre {
     [ $? != 0 ] && error_exit "pcre make err"
     make install
     [ $? != 0 ] && error_exit "pcre install err"
-    # add to active lib
+    # refresh active lib
     ldconfig
     cd $SRC_DIR 
     rm -fr $PCRE_SRC
