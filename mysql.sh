@@ -26,7 +26,8 @@ function install_mysql {
     tar -zxvf $MYSQL_SRC$SRC_SUFFIX
     cd $MYSQL_SRC
     make clean > /dev/null 2>&1
-    # sure that datadir is empty
+    # sure datadir is empty
+    # sure boost dir
     cmake . -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/$MYSQL_DIR \
         -DMYSQL_DATADIR=$INSTALL_DIR/$MYSQL_DIR/data \
         -DSYSCONFDIR=$INSTALL_DIR/etc \
