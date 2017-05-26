@@ -41,7 +41,9 @@ function install_mysql {
         -DENABLE_DTRACE=0 \
         -DDEFAULT_CHARSET=utf8mb4 \
         -DDEFAULT_COLLATION=utf8mb4_general_ci \
-        -DWITH_EMBEDDED_SERVER=1
+        -DWITH_EMBEDDED_SERVER=1 \
+        -DDOWNLOAD_BOOST=1 \
+        -DWITH_BOOST=/usr/share/doc/boost-1.53.0
     [ $? != 0 ] && error_exit "mysql configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "mysql make err"
@@ -102,10 +104,11 @@ function install_mysql {
 }
 
 # install common dependency
+# mysql compile need boost default dir=/
 # mysql user:group is mysql:mysql
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    yum install -y install gcc gcc-c++ ncurses ncurses-devel cmake bison
+    yum install -y install gcc gcc-c++ cmake ncurses ncurses-devel bison bison-devel boost
     [ $? != 0 ] && error_exit "common dependence install err"
     # create user for mysql
     groupadd -g 27 mysql > /dev/null 2>&1
