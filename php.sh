@@ -202,21 +202,28 @@ function install_mcrypt {
 # php user:group is www:www
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    # for centos7
-    iptables="iptables-services"
     yum install -y gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel \
         freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel \
         curl-devel patch libmcrypt-devel libmhash-devel ncurses-devel bzip2 \
         libcap-devel ntp sysklogd diffutils sendmail iptables zip unzip cmake wget \
         re2c bison icu libicu libicu-devel net-tools psmisc vim-enhanced \
-        telnet ipset lsof $iptables
+        telnet ipset lsof iptables
     [ $? != 0 ] && error_exit "common dependency install err"
     # create user for nginx php
     groupadd -g 1000 www > /dev/null 2>&1
     # -d to set user home_dir=/www
     # -s to set user login shell=/sbin/nologin, you also to set /bin/bash
-    useradd -g 1000 -u 1000 -d /www -s /sbin/nologin www >/dev/null 2>&1
-    touch $COMMON_LOCK
+    useradd -g 1000 -u 1000 -d /www -s /sbin/nologin www > /dev/null 2>&1
+    # set timezone
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+    # syn system time to sina time
+    ntpdate tiger.sina.com.cn
+    # syn hardware time to system time
+    hwclock -w
+    
+    echo 
+    echo "install common dependency complete."
+    touch $COMMON_LOCK 
 }
 
 # install error function

@@ -107,17 +107,21 @@ function install_pcre {
 # nginx user:group is www:www
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    # for centos7
-    iptables="iptables-services"
     yum install -y gcc gcc-c++ make cmake autoconf automake sudo wget \
         zlib zlib-devel openssl openssl-devel gd gd-devel \
-        telnet ipset lsof $iptables
+        telnet ipset lsof iptables
     [ $? != 0 ] && error_exit "common dependence install err"
     # create user for nginx and php
     groupadd -g 1000 www > /dev/null 2>&1
     # -d to set user home_dir=/www
     # -s to set user login shell=/sbin/nologin, you also to set /bin/bash
     useradd -g 1000 -u 1000 -d /www -s /sbin/nologin www > /dev/null 2>&1
+    # set timezone
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+    # syn system time to sina time
+    ntpdate tiger.sina.com.cn
+    # syn hardware time to system time
+    hwclock -w
    
     echo 
     echo "install common dependency complete."
