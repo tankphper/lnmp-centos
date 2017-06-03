@@ -19,7 +19,10 @@ CMAKE_SRC="cmake-3.8.2"
 CMAKE_DIR="$CMAKE_SRC"
 CMAKE_LOCK="$LOCK_DIR/cmake.lock"
 # boost
-BOOST_DOWN="http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz"
+BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz"
+BOOST_SRC="boost_1_59_0"
+BOOST_DIR="$BOOST_SRC"
+BOOST_LOCK="$LOCK_DIR/boost.lock"
 # common dependency fo mysql
 COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 
@@ -27,6 +30,7 @@ COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 function install_mysql {
     
     [ ! -f /usr/local/bin/cmake ] && install_cmake 
+    [ ! -d /usr/src/$BOOST_SRC ] && install_boost
 
     [ -f $MYSQL_LOCK ] && return
     
@@ -54,7 +58,7 @@ function install_mysql {
         -DDEFAULT_COLLATION=utf8mb4_general_ci \
         -DWITH_EMBEDDED_SERVER=1 \
         -DDOWNLOAD_BOOST=1 \
-        -DWITH_BOOST=/usr/share/doc/boost-1.53.0
+        -DWITH_BOOST=/usr/src/$BOOST_SRC
     [ $? != 0 ] && error_exit "mysql configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "mysql make err"
@@ -139,13 +143,32 @@ function install_cmake {
     touch $CMAKE_LOCK
 }
 
+# boost install function
+# mysql depend boost library
+# boost_dir=/usr/src
+function install_boost {
+    [ -f $BOOST_LOCK ] && return
+
+    echo "install boost..."
+    cd $SRC_DIR
+    [ ! -f $BOOST_SRC$SRC_SUFFIX ] && wget $BOOST_DOWN
+    cp $BOOST_SRC$SRC_SUFFIX /usr/src
+    cd /usr/src
+    tar -zxvf $BOOST_SRC$SRC_SUFFIX
+    
+    echo
+    echo "install boost complete."
+    touch $BOOST_LOCK
+}
+
 # install common dependency
 # mysql compile need boost default dir=/usr/share/doc/boost-1.53.0
+# remove centos7 default boost version is 1.53.0
 # remove system default cmake
 # mysql user:group is mysql:mysql
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    yum install -y gcc gcc-c++ ncurses ncurses-devel bison bison-devel boost \
+    yum install -y gcc gcc-c++ ncurses ncurses-devel bison bison-devel \
         ntp ntpdate
     [ $? != 0 ] && error_exit "common dependence install err"
     
