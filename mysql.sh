@@ -15,7 +15,7 @@ MYSQL_DIR="$MYSQL_SRC"
 MYSQL_LOCK="$LOCK_DIR/mysql.lock"
 # cmake tool source
 CMAKE_DOWN="https://cmake.org/files/v3.8/cmake-3.8.2.tar.gz"
-CMAKE_SRC="cmake-3.8.2.tar.gz"
+CMAKE_SRC="cmake-3.8.2"
 CMAKE_DIR="$CMAKE_SRC"
 CMAKE_LOCK="$LOCK_DIR/cmake.lock"
 # common dependency fo mysql
@@ -24,7 +24,7 @@ COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 # mysql install function
 function install_mysql {
     
-    
+    [ ! -f /usr/local/bin/cmake ] && install_cmake 
 
     [ -f $MYSQL_LOCK ] && return
     
