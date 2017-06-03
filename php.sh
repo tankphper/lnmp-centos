@@ -24,7 +24,7 @@ PHP_SRC="php-7.1.5"
 PHP_DIR="$PHP_SRC"
 PHP_LOCK="$LOCK_DIR/php.lock"
 # common dependency fo php
-COMMON_LOCK="$LOCK_DIR/common.lock"
+COMMON_LOCK="$LOCK_DIR/php.common.lock"
 # extensions for php
 SWOOLE_DOWN="https://github.com/swoole/swoole-src/archive/v1.9.6.tar.gz"
 SWOOLE_DIR="swoole-src-1.9.6"
