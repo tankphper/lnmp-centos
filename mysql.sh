@@ -18,6 +18,8 @@ CMAKE_DOWN="https://cmake.org/files/v3.8/cmake-3.8.2.tar.gz"
 CMAKE_SRC="cmake-3.8.2"
 CMAKE_DIR="$CMAKE_SRC"
 CMAKE_LOCK="$LOCK_DIR/cmake.lock"
+# boost
+BOOST_DOWN="http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz"
 # common dependency fo mysql
 COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 
@@ -143,7 +145,7 @@ function install_cmake {
 # mysql user:group is mysql:mysql
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    yum install -y gcc gcc-c++ ncurses ncurses-devel bison bison-devel \
+    yum install -y gcc gcc-c++ ncurses ncurses-devel bison bison-devel boost \
         ntp ntpdate
     [ $? != 0 ] && error_exit "common dependence install err"
     
