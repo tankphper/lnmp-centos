@@ -111,11 +111,15 @@ function install_common {
     [ -f $COMMON_LOCK ] && return
     yum install -y install gcc gcc-c++ cmake ncurses ncurses-devel bison bison-devel
     [ $? != 0 ] && error_exit "common dependence install err"
+    
     # create user for mysql
-    groupadd -g 27 mysql > /dev/null 2>&1
+    #groupadd -g 27 mysql > /dev/null 2>&1
     # -d to set user home_dir=/www
     # -s to set user login shell=/sbin/nologin, you also to set /bin/bash
-    useradd -g 27 -u 27 -d /dev/null -s /sbin/nologin mysql > /dev/null 2>&1
+    #useradd -g 27 -u 27 -d /dev/null -s /sbin/nologin mysql > /dev/null 2>&1
+    
+    # -U create a group with the same name as the user. so it can instead groupadd and useradd
+    useradd -U -d /dev/null -s /sbin/nologin mysql > /dev/null 2>&1
     # set timezone
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
     # syn system time to sina time
