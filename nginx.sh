@@ -110,7 +110,8 @@ function install_common {
     # iptables-services for R7
     yum install -y gcc gcc-c++ make cmake autoconf automake sudo wget \
         zlib zlib-devel openssl openssl-devel gd gd-devel \
-        telnet ipset lsof iptables iptables-services
+        telnet ipset lsof ntpdate iptables iptables-services \
+        ntp ntpdate
     [ $? != 0 ] && error_exit "common dependence install err"
     # create user for nginx and php
     #groupadd -g 1000 www > /dev/null 2>&1
