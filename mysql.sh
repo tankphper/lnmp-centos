@@ -13,11 +13,19 @@ MYSQL_DOWN="https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.17.tar.gz"
 MYSQL_SRC="mysql-5.7.17"
 MYSQL_DIR="$MYSQL_SRC"
 MYSQL_LOCK="$LOCK_DIR/mysql.lock"
+# cmake tool source
+CMAKE_DOWN="https://cmake.org/files/v3.8/cmake-3.8.2.tar.gz"
+CMAKE_SRC="cmake-3.8.2.tar.gz"
+CMAKE_DIR="$CMAKE_SRC"
+CMAKE_LOCK="$LOCK_DIR/cmake.lock"
 # common dependency fo mysql
 COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 
 # mysql install function
 function install_mysql {
+    
+    
+
     [ -f $MYSQL_LOCK ] && return
     
     echo "install mysql..."
@@ -104,12 +112,38 @@ function install_mysql {
     touch $MYSQL_LOCK
 }
 
+# cmake install function
+# mysql depend cmake to compile
+# cmake_dir=/usr
+function install_cmake {
+    [ -f $CMAKE_LOCK ] && return
+
+    echo "install cmake..."
+    cd $SRC_DIR
+    [ ! -f $CMAKE_SRC$SRC_SUFFIX ] && wget $CMAKE_DOWN
+    tar -zxvf $CMAKE_SRC$SRC_SUFFIX
+    cd $CMAKE_SRC
+    ./bootstrap --prefix=/usr
+    [ $? != 0 ] && error_exit "cmake configure err"
+    make
+    [ $? != 0 ] && error_exit "cmake make err"
+    make install
+    [ $? != 0 ] && error_exit "cmake install err"
+    cd $SRC_DIR
+    rm -fr $CMAKE_SRC
+
+    echo
+    echo "install cmake complete."
+    touch $CMAKE_LOCK
+}
+
 # install common dependency
 # mysql compile need boost default dir=/usr/share/doc/boost-1.53.0
+# remove system default cmake
 # mysql user:group is mysql:mysql
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    yum install -y gcc gcc-c++ cmake ncurses ncurses-devel bison bison-devel \
+    yum install -y gcc gcc-c++ ncurses ncurses-devel bison bison-devel \
         ntp ntpdate
     [ $? != 0 ] && error_exit "common dependence install err"
     
