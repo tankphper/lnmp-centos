@@ -202,12 +202,13 @@ function install_mcrypt {
 # php user:group is www:www
 function install_common {
     [ -f $COMMON_LOCK ] && return
+    # iptables-services for R7
     yum install -y gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel \
         freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel \
         curl-devel patch libmcrypt-devel libmhash-devel ncurses-devel bzip2 \
         libcap-devel ntp sysklogd diffutils sendmail iptables zip unzip cmake wget \
         re2c bison icu libicu libicu-devel net-tools psmisc vim-enhanced \
-        telnet ipset lsof iptables
+        telnet ipset lsof iptables iptables-services
     [ $? != 0 ] && error_exit "common dependency install err"
     
     # create user for nginx php

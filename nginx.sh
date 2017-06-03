@@ -107,9 +107,10 @@ function install_pcre {
 # nginx user:group is www:www
 function install_common {
     [ -f $COMMON_LOCK ] && return
+    # iptables-services for R7
     yum install -y gcc gcc-c++ make cmake autoconf automake sudo wget \
         zlib zlib-devel openssl openssl-devel gd gd-devel \
-        telnet ipset lsof iptables
+        telnet ipset lsof iptables iptables-services
     [ $? != 0 ] && error_exit "common dependence install err"
     # create user for nginx and php
     #groupadd -g 1000 www > /dev/null 2>&1
