@@ -200,13 +200,14 @@ function install_mcrypt {
 
 # install common dependency
 # ifconfig command depend net-tools
+# remove libmhash-devel libmcrypt-devel
 # php user:group is www:www
 function install_common {
     [ -f $COMMON_LOCK ] && return
     # iptables-services for R7
     yum install -y gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel \
         freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel \
-        curl-devel patch libmcrypt-devel libmhash-devel ncurses-devel bzip2 \
+        curl-devel patch ncurses-devel bzip2 \
         libcap-devel ntp sysklogd diffutils zip unzip cmake wget \
         re2c bison icu libicu libicu-devel net-tools psmisc vim-enhanced \
         telnet ipset lsof iptables iptables-services ntp ntpdate
