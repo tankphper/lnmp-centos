@@ -166,7 +166,7 @@ function install_mhash {
     
     echo 
     echo "install mhash complete."
-    touch $MCRYPT_LOCK
+    touch $MHAHS_LOCK
 }
 
 # mcrypt install function
