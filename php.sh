@@ -41,8 +41,8 @@ REDIS_LOCK="$LOCK_DIR/phpredis.lock"
 function install_php {
     
     [ ! -f /usr/lib/libiconv.so ] && install_libiconv
-    [ ! -f /usr/lib64/libmhash.so ] && install_mhash
-    [ ! -f /usr/lib64/libmcrypt.so ] && install_mcrypt
+    [ ! -f /usr/lib/libmhash.so ] && install_mhash
+    [ ! -f /usr/lib/libmcrypt.so ] && install_mcrypt
     
     [ -f $PHP_LOCK ] && return
     
@@ -137,6 +137,7 @@ function install_libiconv {
     ldconfig
     cd $SRC_DIR
     rm -fr $ICONV_SRC
+    
     echo 
     echo "install libiconv complete."
     touch $ICONV_LOCK
@@ -158,13 +159,13 @@ function install_mhash {
     [ $? != 0 ] && error_exit "mhash make err"
     make install
     [ $? != 0 ] && error_exit "mhash install err"
-    #add to active lib
+    # refresh active lib
     ldconfig
     cd $SRC_DIR
-    rm -fr $MCRYPT_SRC
+    rm -fr $MHASH_SRC
     
     echo 
-    echo "install mcrypt complete."
+    echo "install mhash complete."
     touch $MCRYPT_LOCK
 }
 
