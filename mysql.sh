@@ -121,7 +121,7 @@ function install_common {
     
     # -U create a group with the same name as the user. so it can instead groupadd and useradd
     useradd -U -d /dev/null -s /sbin/nologin mysql > /dev/null 2>&1
-    # set timezone
+    # set local timezone
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
     # syn system time to sina time
     ntpdate tiger.sina.com.cn
