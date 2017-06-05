@@ -87,8 +87,8 @@ function install_mysql {
     if [ $R7 == 1 ]
     then
         # init db use
-        # --initialize set pwd to log file
-        # --initialize-insecure set a empty pwd
+        # --initialize set password to log file
+        # --initialize-insecure set a empty password
         $INSTALL_DIR/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data 
         # auto start script for centos7
         cp -f support-files/mysql.server /etc/init.d/mysqld
@@ -97,6 +97,9 @@ function install_mysql {
         chkconfig --add mysqld
         chkconfig --level 35 mysqld on
         service mysqld start
+
+        # set root password
+        $INTSALL_DIR/mysql/bin/mysql -u root -p -e "use mysql;alter user 'root'@'localhost' identified by 'zhoumanzi'"
     else
         # init db
         $INSTALL_DIR/mysql/scripts/mysql_install_db --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
@@ -107,16 +110,14 @@ function install_mysql {
         chkconfig --add mysqld
         chkconfig --level 35 mysqld on
         service mysqld start
+
+        # set root password 
+        $INSTALL_DIR/mysql/bin/mysqladmin -u root password "zhoumanzi"
+
     fi
     # mysql.sock dir
     mkdir -p /var/lib/mysql
     [ -f /tmp/mysql.sock ] && ln -sf /tmp/mysql.sock /var/lib/mysql/
-    # set root password 
-    $INSTALL_DIR/mysql/bin/mysqladmin -u root password "zhoumanzi"
-    $INSTALL_DIR/mysql/bin/mysql -uroot -p"zhoumanzi" -e \
-        "use mysql;
-        update user set password=password('zhoumanzi') where user='root';
-        flush privileges;"
     
     echo  
     echo "install mysql complete."
