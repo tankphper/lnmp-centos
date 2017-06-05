@@ -72,7 +72,8 @@ function install_mysql {
     # bakup config file
     [ -f /etc/my.cnf ] && mv /etc/my.cnf /etc/my.cnf.old
     # new config file
-    cp -f my.cnf $INSTALL_DIR/etc/my.cnf
+    [ ! -d $INSTALL_DIR/etc ] && mkdir $INSTALL_DIR/etc
+    cp -f $ROOT/mysql.conf/my.cnf $INSTALL_DIR/etc/my.cnf
     ln -sf $INSTALL_DIR/etc/my.cnf /etc/my.cnf
     # db file user
     chown -hR mysql.mysql $INSTALL_DIR/mysql/data
@@ -89,6 +90,7 @@ function install_mysql {
         $INSTALL_DIR/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data 
         # auto start script for centos7
         cp -f support-files/mysql.server /etc/init.d/mysqld
+        chmod +x /etc/init.d/mysqld
         # auto start when start system
         chkconfig --add mysqld
         chkconfig --level 35 mysqld on
@@ -98,6 +100,7 @@ function install_mysql {
         $INSTALL_DIR/mysql/scripts/mysql_install_db --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
         # auto start script for centos6
         cp -f support-files/mysql.server /etc/init.d/mysqld
+        chmod +x /etc/init.d/mysqld
         # auto start when start system
         chkconfig --add mysqld
         chkconfig --level 35 mysqld on
@@ -105,7 +108,7 @@ function install_mysql {
     fi
     # mysql.sock dir
     mkdir -p /var/lib/mysql
-    ln -sf /tmp/mysql.sock /var/lib/mysql/
+    [ -f /tmp/mysql.sock ] && ln -sf /tmp/mysql.sock /var/lib/mysql/
     # set root password 
     $INSTALL_DIR/mysql/bin/mysqladmin -u root password "zhoumanzi"
     $INSTALL_DIR/mysql/bin/mysql -uroot -p"zhoumanzi" -e \
