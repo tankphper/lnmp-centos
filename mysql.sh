@@ -86,7 +86,9 @@ function install_mysql {
     
     if [ $R7 == 1 ]
     then
-        # init db
+        # init db use
+        # --initialize set pwd to log file
+        # --initialize-insecure set a empty pwd
         $INSTALL_DIR/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data 
         # auto start script for centos7
         cp -f support-files/mysql.server /etc/init.d/mysqld
