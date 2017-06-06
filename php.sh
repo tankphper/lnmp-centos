@@ -207,10 +207,9 @@ function install_common {
     # iptables-services for R7
     yum install -y gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel \
         freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel \
-        curl-devel patch ncurses-devel bzip2 \
-        libcap-devel ntp sysklogd diffutils zip unzip cmake wget \
-        re2c bison icu libicu libicu-devel net-tools psmisc vim-enhanced \
-        telnet ipset lsof iptables iptables-services ntp ntpdate
+        curl-devel patch ncurses-devel bzip2 libcap-devel sysklogd diffutils \
+        re2c bison icu libicu libicu-devel net-tools psmisc vim vim-enhanced \
+        zip unzip telnet ipset lsof iptables iptables-services ntp ntpdate
     [ $? != 0 ] && error_exit "common dependency install err"
     
     # create user for nginx php
