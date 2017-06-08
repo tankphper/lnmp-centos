@@ -33,8 +33,13 @@ function install_nginx {
     sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' auto/cc/gcc
     ./configure --user=www --group=www \
         --prefix=$INSTALL_DIR/$NGINX_DIR \
-        --with-http_stub_status_module \
+        --http-client-body-temp-path=$INSTALL_DIR/$NGINX_DIR/temp/client_body \
+        --http-proxy-temp-path=$INSTALL_DIR/$NGINX_DIR/temp/proxy \
+        --http-fastcgi-temp-path=$INSTALL_DIR/$NGINX_DIR/temp/fcgi \
+        --http-scgi-temp-path=$INSTALL_DIR/$NGINX_DIR/temp/scgi \
+        --http-uwsgi-temp-path=$INSTALL_DIR/$NGINX_DIR/temp/uwsgi \
         --with-ipv6 \
+        --with-http_stub_status_module \
         --with-http_gzip_static_module \
         --with-http_realip_module \
         --with-http_ssl_module \
