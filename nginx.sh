@@ -51,6 +51,8 @@ function install_nginx {
     [ $? != 0 ] && error_exit "nginx install err"
     ln -sf $INSTALL_DIR/$NGINX_SRC $INSTALL_DIR/nginx
     mkdir -p $INSTALL_DIR/nginx/conf/{vhost,rewrite}
+    # for nginx temp
+    mkdir -p $INSTALL_DIR/$NGINX_DIR/temp
     # default web dir
     chown -hR www:www /www/web
     # cp default conf and tp rewrite rule 
