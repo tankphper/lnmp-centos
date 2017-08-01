@@ -13,8 +13,8 @@ PCRE_DOWN="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.g
 PCRE_SRC="pcre-8.40"
 PCRE_LOCK="$LOCK_DIR/pcre.lock"
 # nginx source
-NGINX_DOWN="http://nginx.org/download/nginx-1.12.0.tar.gz"
-NGINX_SRC="nginx-1.12.0"
+NGINX_DOWN="http://nginx.org/download/nginx-1.12.1.tar.gz"
+NGINX_SRC="nginx-1.12.1"
 NGINX_DIR="$NGINX_SRC"
 NGINX_LOCK="$LOCK_DIR/nginx.lock"
 # common dependency fo nginx
