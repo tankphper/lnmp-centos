@@ -35,13 +35,14 @@ function install_mysql {
     [ -f $MYSQL_LOCK ] && return
     
     echo "install mysql..."
+    
     cd $SRC_DIR
     [ ! -f $MYSQL_SRC$SRC_SUFFIX ] && wget $MYSQL_DOWN
     tar -zxvf $MYSQL_SRC$SRC_SUFFIX
     cd $MYSQL_SRC
     make clean > /dev/null 2>&1
     # sure datadir is empty
-    # sure boost dir
+    # sure boost dir path
     cmake . -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/$MYSQL_DIR \
         -DMYSQL_DATADIR=$INSTALL_DIR/$MYSQL_DIR/data \
         -DSYSCONFDIR=$INSTALL_DIR/etc \
@@ -75,8 +76,9 @@ function install_mysql {
     [ ! -d $INSTALL_DIR/etc ] && mkdir $INSTALL_DIR/etc
     cp -f $ROOT/mysql.conf/my.cnf $INSTALL_DIR/etc/my.cnf
     ln -sf $INSTALL_DIR/etc/my.cnf /etc/my.cnf
-    # db file user
-    chown -hR mysql.mysql $INSTALL_DIR/mysql/data
+    # db file user:group
+    [ -d $INSTALL_DIR/mysql/data ] && mkdir $INSTALL_DIR/mysql/data
+    chown -hR mysql:mysql $INSTALL_DIR/mysql/data
     # add to env path
     echo "PATH=\$PATH:$INSTALL_DIR/mysql/bin" > /etc/profile.d/mysql.sh
     # add to active lib
@@ -102,9 +104,9 @@ function install_mysql {
         $INTSALL_DIR/mysql/bin/mysql -u root -p -e "use mysql;alter user 'root'@'localhost' identified by 'zhoumanzi'"
     else
         # init db
-        $INSTALL_DIR/mysql/scripts/mysql_install_db --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
+        ./scripts/mysql_install_db --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
         # auto start script for centos6
-        cp -f support-files/mysql.server /etc/init.d/mysqld
+        cp -f ./support-files/mysql.server /etc/init.d/mysqld
         chmod +x /etc/init.d/mysqld
         # auto start when start system
         chkconfig --add mysqld
