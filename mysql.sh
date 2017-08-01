@@ -13,6 +13,7 @@ MYSQL_DOWN="https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.18.tar.gz"
 MYSQL_SRC="mysql-5.7.18"
 MYSQL_DIR="$MYSQL_SRC"
 MYSQL_LOCK="$LOCK_DIR/mysql.lock"
+MYSQL_57=1
 # cmake tool source
 CMAKE_DOWN="https://cmake.org/files/v3.8/cmake-3.8.2.tar.gz"
 CMAKE_SRC="cmake-3.8.2"
@@ -86,37 +87,33 @@ function install_mysql {
     # refresh active lib
     ldconfig
     
-    if [ $R7 == 1 ]
+    if [ $MYSQL_57 == 1 ]
     then
-        # init db use
+        # init db for mysql-5.7.x
         # --initialize set password to log file
         # --initialize-insecure set a empty password
-        $INSTALL_DIR/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data 
-        # auto start script for centos7
-        cp -f support-files/mysql.server /etc/init.d/mysqld
-        chmod +x /etc/init.d/mysqld
-        # auto start when start system
-        chkconfig --add mysqld
-        chkconfig --level 35 mysqld on
-        service mysqld start
+        $INSTALL_DIR/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
+    else
+        # init db for mysql-5.6.x
+        ./scripts/mysql_install_db --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
+    fi
+    
+    # auto start script for centos6 and centos7
+    cp -f ./support-files/mysql.server /etc/init.d/mysqld
+    chmod +x /etc/init.d/mysqld
+    # auto start when start system
+    chkconfig --add mysqld
+    chkconfig --level 35 mysqld on
+    service mysqld start
 
-        # set root password
+    if [ $MYSQL_57 == 1 ]
+        # set root password for mysql-5.7.x
         $INTSALL_DIR/mysql/bin/mysql -u root -p -e "use mysql;alter user 'root'@'localhost' identified by 'zhoumanzi'"
     else
-        # init db
-        ./scripts/mysql_install_db --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
-        # auto start script for centos6
-        cp -f ./support-files/mysql.server /etc/init.d/mysqld
-        chmod +x /etc/init.d/mysqld
-        # auto start when start system
-        chkconfig --add mysqld
-        chkconfig --level 35 mysqld on
-        service mysqld start
-
-        # set root password 
+        # set root password for mysql-5.6.x 
         $INSTALL_DIR/mysql/bin/mysqladmin -u root password "zhoumanzi"
-
     fi
+    
     # mysql.sock dir
     mkdir -p /var/lib/mysql
     [ -f /tmp/mysql.sock ] && ln -sf /tmp/mysql.sock /var/lib/mysql/
