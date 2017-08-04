@@ -106,7 +106,7 @@ function install_mysql {
     chkconfig --level 35 mysqld on
     service mysqld start
 
-    if [ $MYSQL_57 == 1 ]
+    if [ $MYSQL_57 == 1 ] then 
         # set root password for mysql-5.7.x
         $INTSALL_DIR/mysql/bin/mysql -u root -p -e "use mysql;alter user 'root'@'localhost' identified by 'zhoumanzi'"
     else
