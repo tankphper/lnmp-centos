@@ -9,8 +9,8 @@ LOCK_DIR="$ROOT/lock"
 SRC_DIR="$ROOT/src"
 SRC_SUFFIX=".tar.gz"
 # mysql source
-MYSQL_DOWN="https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.18.tar.gz"
-MYSQL_SRC="mysql-5.7.18"
+MYSQL_DOWN="https://cdn.mysql.com/archives/mysql-5.6/mysql-5.6.37.tar.gz"
+MYSQL_SRC="mysql-5.6.37"
 MYSQL_DIR="$MYSQL_SRC"
 MYSQL_LOCK="$LOCK_DIR/mysql.lock"
 # cmake tool source
@@ -18,11 +18,6 @@ CMAKE_DOWN="https://cmake.org/files/v3.8/cmake-3.8.2.tar.gz"
 CMAKE_SRC="cmake-3.8.2"
 CMAKE_DIR="$CMAKE_SRC"
 CMAKE_LOCK="$LOCK_DIR/cmake.lock"
-# boost
-BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz"
-BOOST_SRC="boost_1_59_0"
-BOOST_DIR="$BOOST_SRC"
-BOOST_LOCK="$LOCK_DIR/boost.lock"
 # common dependency fo mysql
 COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 
@@ -30,7 +25,6 @@ COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 function install_mysql {
     
     [ ! -f /usr/local/bin/cmake ] && install_cmake 
-    [ ! -d /usr/src/$BOOST_SRC ] && install_boost
 
     [ -f $MYSQL_LOCK ] && return
     
@@ -42,7 +36,6 @@ function install_mysql {
     cd $MYSQL_SRC
     make clean > /dev/null 2>&1
     # sure datadir is empty
-    # sure boost dir path
     cmake . -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/$MYSQL_DIR \
         -DMYSQL_DATADIR=$INSTALL_DIR/$MYSQL_DIR/data \
         -DSYSCONFDIR=$INSTALL_DIR/etc \
@@ -57,9 +50,7 @@ function install_mysql {
         -DENABLE_DTRACE=0 \
         -DDEFAULT_CHARSET=utf8mb4 \
         -DDEFAULT_COLLATION=utf8mb4_general_ci \
-        -DWITH_EMBEDDED_SERVER=1 \
-        -DDOWNLOAD_BOOST=1 \
-        -DWITH_BOOST=/usr/src/$BOOST_SRC
+        -DWITH_EMBEDDED_SERVER=1
     [ $? != 0 ] && error_exit "mysql configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "mysql make err"
@@ -74,11 +65,8 @@ function install_mysql {
     [ -f /etc/my.cnf ] && mv /etc/my.cnf /etc/my.cnf.old
     # new config file
     [ ! -d $INSTALL_DIR/etc ] && mkdir $INSTALL_DIR/etc
-    cp -f $ROOT/mysql.conf/my.cnf $INSTALL_DIR/etc/my.cnf
+    cp -f $ROOT/mysql.56.conf/my.cnf $INSTALL_DIR/etc/my.cnf
     ln -sf $INSTALL_DIR/etc/my.cnf /etc/my.cnf
-    # db file user:group
-    #[ ! -d $INSTALL_DIR/mysql/data ] && mkdir $INSTALL_DIR/mysql/data
-    #chown -hR mysql:mysql $INSTALL_DIR/mysql/data
     # add to env path
     echo "PATH=\$PATH:$INSTALL_DIR/mysql/bin" > /etc/profile.d/mysql.sh
     # add to active lib
@@ -86,10 +74,8 @@ function install_mysql {
     # refresh active lib
     ldconfig
     
-    # init db for mysql-5.7.x
-    # --initialize set password to log file
-    # --initialize-insecure set a empty password
-    $INSTALL_DIR/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
+    # init db for mysql-5.6.x
+    ./scripts/mysql_install_db --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
     # db dir user:group
     chown -hR mysql:mysql $INSTALL_DIR/mysql/data 
     # auto start script for centos6 and centos7
@@ -100,8 +86,8 @@ function install_mysql {
     chkconfig --level 35 mysqld on
     service mysqld start
 
-    # set root password for mysql-5.7.x
-    $INTSALL_DIR/mysql/bin/mysql -u root -p -e "use mysql;alter user 'root'@'localhost' identified by 'zhoumanzi'"
+    # set root password for mysql-5.6.x 
+    $INSTALL_DIR/mysql/bin/mysqladmin -u root password "zhoumanzi"
     
     # mysql.sock dir
     mkdir -p /var/lib/mysql
@@ -137,27 +123,7 @@ function install_cmake {
     touch $CMAKE_LOCK
 }
 
-# boost install function
-# mysql depend boost library
-# boost_dir=/usr/src
-function install_boost {
-    [ -f $BOOST_LOCK ] && return
-
-    echo "install boost..."
-    cd $SRC_DIR
-    [ ! -f $BOOST_SRC$SRC_SUFFIX ] && wget $BOOST_DOWN
-    cp $BOOST_SRC$SRC_SUFFIX /usr/src
-    cd /usr/src
-    tar -zxvf $BOOST_SRC$SRC_SUFFIX
-    
-    echo
-    echo "install boost complete."
-    touch $BOOST_LOCK
-}
-
 # install common dependency
-# mysql compile need boost default dir=/usr/share/doc/boost-1.53.0
-# remove centos7 default boost version is 1.53.0
 # remove system default cmake
 # mysql user:group is mysql:mysql
 function install_common {
