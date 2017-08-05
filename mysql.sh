@@ -78,8 +78,8 @@ function install_mysql {
     cp -f $ROOT/mysql.conf/my.cnf $INSTALL_DIR/etc/my.cnf
     ln -sf $INSTALL_DIR/etc/my.cnf /etc/my.cnf
     # db file user:group
-    [ -d $INSTALL_DIR/mysql/data ] && mkdir $INSTALL_DIR/mysql/data
-    chown -hR mysql:mysql $INSTALL_DIR/mysql/data
+    #[ ! -d $INSTALL_DIR/mysql/data ] && mkdir $INSTALL_DIR/mysql/data
+    #chown -hR mysql:mysql $INSTALL_DIR/mysql/data
     # add to env path
     echo "PATH=\$PATH:$INSTALL_DIR/mysql/bin" > /etc/profile.d/mysql.sh
     # add to active lib
@@ -97,7 +97,8 @@ function install_mysql {
         # init db for mysql-5.6.x
         ./scripts/mysql_install_db --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
     fi
-    
+    # db dir user:group
+    chown -hR mysql:mysql $INSTALL_DIR/mysql/data 
     # auto start script for centos6 and centos7
     cp -f ./support-files/mysql.server /etc/init.d/mysqld
     chmod +x /etc/init.d/mysqld
