@@ -53,7 +53,7 @@ function install_redis {
         auto_start_dir="/etc/rc.d/init.d"
         cp -f utils/redis_init_script $auto_start_dir/redis
         sed -i '1a# chkconfig: 2345 80 90' $auto_start_dir/redis 
-        sed -i 's@^CONF="/etc/redis/${REDISPORT}.conf"@CONF="/www/server/etc/redis_${REDISPORT}.conf"@' $auto_start_dir/redis 
+        sed -i 's@^CONF="/etc/redis/${REDISPORT}.conf"@CONF="/www/server/etc/redis.conf"@' $auto_start_dir/redis 
         sed -i 's@$EXEC $CONF@$EXEC $CONF \&@' $auto_start_dir/redis 
         # chkconfig and start
         chkconfig --add redis
