@@ -92,7 +92,7 @@ function install_php {
         cp -f $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf.default $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf
         cp -f $INSTALL_DIR/$PHP_DIR/etc/php-fpm.d/www.conf.default $INSTALL_DIR/$PHP_DIR/etc/php-fpm.d/www.conf
         # php-fpm config
-        sed -i 's@^;pid = run/php-fpm.pid@pid = run/php-fpm.pid' $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf
+        sed -i 's@^;pid = run/php-fpm.pid@pid = run/php-fpm.pid@' $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf
     else
         echo 'php 6'
     fi
