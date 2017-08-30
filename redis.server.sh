@@ -33,7 +33,6 @@ function install_redis {
     # copy to default conf dir
     cp -f redis.conf $CONF_DIR/redis.conf
     # config redis
-    sed -i 's@^daemonize no@daemonize yes@' $CONF_DIR/redis.conf
     sed -i 's@^protected-mode yes@protected-mode no@' $CONF_DIR/redis.conf
     sed -i 's@^bind 127.0.0.1@#bind 127.0.0.1@' $CONF_DIR/redis.conf
     sed -i 's@^# requirepass foobared@requirepass zhoumanzi@' $CONF_DIR/redis.conf
@@ -42,6 +41,8 @@ function install_redis {
     sed -i 's@^dir ./@dir /www/data/@' $CONF_DIR/redis.conf
     if [ $R7 == 1 ]
     then
+        # systemctl require redis run non-daemonised
+        sed -i 's@^daemonize yes@daemonize no@' $CONF_DIR/redis.conf
         # auto start script for centos7
         cp $ROOT/redis.server.conf/redis.init.R7 /usr/lib/systemd/system/redis.service 
         systemctl daemon-reload
@@ -49,6 +50,8 @@ function install_redis {
         # auto start when start system
         systemctl enable redis.service
     else
+        # only centos6 need daemon
+        sed -i 's@^daemonize no@daemonize yes@' $CONF_DIR/redis.conf
         # auto start script for centos6
         auto_start_dir="/etc/rc.d/init.d"
         cp -f utils/redis_init_script $auto_start_dir/redis
