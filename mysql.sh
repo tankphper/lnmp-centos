@@ -43,6 +43,7 @@ function install_mysql {
     make clean > /dev/null 2>&1
     # sure datadir is empty
     # sure boost dir path
+    # maybe download boost will timeout
     cmake . -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/$MYSQL_DIR \
         -DMYSQL_DATADIR=$INSTALL_DIR/$MYSQL_DIR/data \
         -DSYSCONFDIR=$INSTALL_DIR/etc \
@@ -59,6 +60,7 @@ function install_mysql {
         -DDEFAULT_COLLATION=utf8mb4_general_ci \
         -DWITH_EMBEDDED_SERVER=1 \
         -DDOWNLOAD_BOOST=1 \
+        -DDOWNLOAD_BOOST_TIMEOUT=3600 \
         -DWITH_BOOST=/usr/src/$BOOST_SRC
     [ $? != 0 ] && error_exit "mysql configure err"
     make -j $CPUS
