@@ -102,8 +102,8 @@ function install_mysql {
     chkconfig --level 35 mysqld on
     service mysqld start
 
-    # set root password for mysql-5.7.x
-    $INTSALL_DIR/mysql/bin/mysql -u root -p -e "use mysql;alter user 'root'@'localhost' identified by 'zhoumanzi'"
+    # init empty password, set root password like this for mysql-5.7.x
+    $INTSALL_DIR/mysql/bin/mysql -u root -e "use mysql;alter user 'root'@'localhost' identified by 'zhoumanzi'"
     
     # mysql.sock dir
     mkdir -p /var/lib/mysql
