@@ -81,6 +81,8 @@ function install_mysql {
     # db file user:group
     #[ ! -d $INSTALL_DIR/mysql/data ] && mkdir $INSTALL_DIR/mysql/data
     #chown -hR mysql:mysql $INSTALL_DIR/mysql/data
+    # make sure dir is writable
+    chmod -R 755 /www
     # add to env path
     echo "PATH=\$PATH:$INSTALL_DIR/mysql/bin" > /etc/profile.d/mysql.sh
     # add to active lib
