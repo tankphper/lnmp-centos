@@ -4,6 +4,9 @@ grep -q "release 7" /etc/redhat-release && R7=1 || R7=0
 echo $ROOT
 echo $CPUS
 echo $R7
+
+read -s -p "Enter php version like 7.1.8:" PHP_VER
+
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
@@ -19,8 +22,8 @@ MCRYPT_DOWN="https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/li
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
 # php7 source
-PHP_DOWN="http://hk1.php.net/distributions/php-7.1.8.tar.gz"
-PHP_SRC="php-7.1.8"
+PHP_DOWN="http://hk1.php.net/distributions/php-{$PHP_VER}.tar.gz"
+PHP_SRC="php-{$PHP_VER}"
 PHP_DIR="$PHP_SRC"
 PHP_LOCK="$LOCK_DIR/php.lock"
 # common dependency fo php
