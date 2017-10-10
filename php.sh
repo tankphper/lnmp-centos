@@ -5,7 +5,7 @@ echo $ROOT
 echo $CPUS
 echo $R7
 
-read -s -p "Enter php version like 7.1.8:" PHP_VER
+read -p "Enter php version like 7.1.8: " PHP_VER
 
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
@@ -22,8 +22,8 @@ MCRYPT_DOWN="https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/li
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
 # php7 source
-PHP_DOWN="http://hk1.php.net/distributions/php-{$PHP_VER}.tar.gz"
-PHP_SRC="php-{$PHP_VER}"
+PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VER.tar.gz"
+PHP_SRC="php-$PHP_VER"
 PHP_DIR="$PHP_SRC"
 PHP_LOCK="$LOCK_DIR/php.lock"
 # common dependency fo php
@@ -97,6 +97,7 @@ function install_php {
         # php-fpm config
         sed -i 's@^;pid = run/php-fpm.pid@pid = run/php-fpm.pid@' $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf
     else
+        cp -f $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf.default $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf
         echo 'php 6'
     fi
     # for php-fpm
