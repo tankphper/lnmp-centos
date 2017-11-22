@@ -47,7 +47,7 @@ function install_php {
     [ ! -f /usr/lib/libmhash.so ] && install_mhash
     [ ! -f /usr/lib/libmcrypt.so ] && install_mcrypt
     
-    [ -f $PHP_LOCK ] && return
+    [ -f $PHP_LOCK ] && (echo 'Install locked.') && return
     
     echo "install php..."
     cd $SRC_DIR
