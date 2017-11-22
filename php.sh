@@ -5,7 +5,7 @@ echo $ROOT
 echo $CPUS
 echo $R7
 
-read -p "Enter php version like 7.1.8: " PHP_VER
+read -p "Enter php version like 7.1.11: " PHP_VER
 
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
