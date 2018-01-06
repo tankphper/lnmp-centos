@@ -75,7 +75,7 @@ function install_mysql {
     ldconfig
     
     # init db for mysql-5.6.x
-    ./scripts/mysql_install_db --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
+    $INSTALL_DIR/mysql/scripts/mysql_install_db --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
     # db dir user:group
     chown -hR mysql:mysql $INSTALL_DIR/mysql/data 
     # auto start script for centos6 and centos7
