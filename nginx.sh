@@ -116,7 +116,7 @@ function install_pcre {
 function install_common {
     [ -f $COMMON_LOCK ] && return
     # iptables-services for R7
-    yum install -y gcc gcc-c++ make cmake autoconf automake sudo wget \
+    yum install -y sudo wget gcc gcc-c++ make cmake autoconf automake \
         zlib zlib-devel openssl openssl-devel gd gd-devel \
         telnet ipset lsof iptables iptables-services \
         ntp ntpdate

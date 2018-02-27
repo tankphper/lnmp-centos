@@ -128,7 +128,7 @@ function install_cmake {
 # mysql user:group is mysql:mysql
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    yum install -y gcc gcc-c++ ncurses ncurses-devel bison bison-devel \
+    yum install -y sudo wget gcc gcc-c++ ncurses ncurses-devel bison bison-devel \
         ntp ntpdate
     [ $? != 0 ] && error_exit "common dependence install err"
     

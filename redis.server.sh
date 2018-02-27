@@ -70,7 +70,7 @@ function install_redis {
 
 # install common dependency
 function install_common {
-    yum install tcl -y
+    yum install -y sudo wget tcl
 }
 
 # install error function

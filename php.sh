@@ -212,7 +212,7 @@ function install_mcrypt {
 function install_common {
     [ -f $COMMON_LOCK ] && return
     # iptables-services for R7
-    yum install -y gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel \
+    yum install -y sudo wget gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel \
         freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel \
         curl-devel patch ncurses-devel bzip2 libcap-devel sysklogd diffutils \
         re2c bison icu libicu libicu-devel net-tools psmisc vim vim-enhanced \
