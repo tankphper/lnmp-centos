@@ -55,11 +55,8 @@ function install_mariadb {
     [ $? != 0 ] && error_exit "mariadb make err"
     make install
     [ $? != 0 ] && error_exit "mariadb install err"
+    # short link name
     ln -sf $INSTALL_DIR/$MARIADB_SRC $INSTALL_DIR/mariadb
-    ln -sf $INSTALL_DIR/mariadb/bin/mysql /usr/local/bin/
-    ln -sf $INSTALL_DIR/mariadb/bin/mysqldump /usr/local/bin/
-    ln -sf $INSTALL_DIR/mariadb/bin/mysqlslap /usr/local/bin/
-    ln -sf $INSTALL_DIR/mariadb/bin/mysqladmin /usr/local/bin/
     # bakup config file
     [ -f /etc/my.cnf ] && mv /etc/my.cnf /etc/my.cnf.old
     # new config file
