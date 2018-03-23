@@ -24,7 +24,9 @@ COMMON_LOCK="$LOCK_DIR/mariadb.common.lock"
 # mariadb install function
 function install_mariadb {
     
-    [ ! -f /usr/local/bin/cmake ] && install_cmake 
+    [ ! -f /usr/local/bin/cmake ] && install_cmake
+
+    [] && install_gnutls 
 
     [ -f $MARIADB_LOCK ] && return
     
@@ -117,6 +119,38 @@ function install_cmake {
     echo
     echo "install cmake complete."
     touch $CMAKE_LOCK
+}
+
+function install_gnutls {
+
+    install_nettle
+
+    wget ftp://ftp.gnutls.org/gcrypt/gnutls/v3.5/gnutls-3.5.9.tar.xz
+    xz -d gnutls-3.5.9.tar.xz
+    tar -xf gnutls-3.5.9.tar
+    cd gnutls-3.5.9
+    PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig ./configure --enable-shared
+    make
+    make install
+
+    cd $SRC_DIR
+    echo
+    echo "install gnutls complete."
+    
+}
+
+function install_nettle {
+    yum install -y gmp-devel
+    wget http://www.lysator.liu.se/~nisse/archive/nettle-3.1.tar.gz
+    tar -zxvf nettle-3.1.tar.gz
+    cd nettle-3.1
+    ./configure --enable-shared
+    make
+    make install
+    
+    cd $SRC_DIR
+    echo
+    echo "install nettle complete."
 }
 
 # install common dependency
