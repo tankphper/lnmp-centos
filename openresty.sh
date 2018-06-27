@@ -11,7 +11,7 @@ SRC_DIR="$ROOT/src"
 SRC_SUFFIX=".tar.gz"
 # openresty source
 OPENRESTY_VERSION="openresty-1.13.6.1"
-OPENRESTY_FILE="$OPENRESTY_VERSION$SCR_SUFFIX"
+OPENRESTY_FILE="$OPENRESTY_VERSION$SRC_SUFFIX"
 OPENRESTY_DOWN="https://openresty.org/download/$OPENRESTY_FILE"
 OPENRESTY_DIR="$INSTALL_DIR/openresty"
 OPENRESTY_LOCK="$LOCK_DIR/openresty.lock"
@@ -67,6 +67,22 @@ function install_openresty {
     touch $OPENRESTY_LOCK
 }
 
+# add nginx third module
+function add_module {
+    echo "install module..."
+    cd $SRC_DIR
+    git clone http://github.com/wandenberg/nginx-push-stream-module.git
+    cd $OPENRESTY_VERSION
+    ./configure --add-module=../nginx-push-stream-module
+    [ $? != 0 ] && error_exit "openresty configure err"
+    make -j $CPUS
+    [ $? != 0 ] && error_exit "openresty make err"
+    make install
+    [ $? != 0 ] && error_exit "openresty install err"
+    echo  
+    echo "add module complete."
+}
+
 # install common dependency
 # nginx gzip depend zlib zlib-devel
 # nginx ssl depend openssl openssl-devel
@@ -116,4 +132,9 @@ function start_install {
     install_openresty
 }
 
-start_install
+if [ $1 = "module" ]
+then
+    add_module
+else
+    start_install
+fi
