@@ -4,63 +4,46 @@ grep -q "release 7" /etc/redhat-release && R7=1 || R7=0
 echo $ROOT
 echo $CPUS
 echo $R7
-INSTALL_DIR="/www/server"
+INSTALL_DIR="/usr/local"
+SERVER_DIR="/www/server"
 LOCK_DIR="$ROOT/lock"
 SRC_DIR="$ROOT/src"
 SRC_SUFFIX=".tar.gz"
-# dependency of nginx
-PCRE_DOWN="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.gz"
-PCRE_SRC="pcre-8.40"
-PCRE_LOCK="$LOCK_DIR/pcre.lock"
-# nginx source
-NGINX_VERSION="nginx-1.14.0"
-NGINX_FILE="$NGINX_VERSION$SRC_SUFFIX"
-NGINX_DOWN="http://nginx.org/download/$NGINX_FILE"
-NGINX_DIR="$INSTALL_DIR/$NGINX_VERSION"
-NGINX_LOCK="$LOCK_DIR/nginx.lock"
-# common dependency for nginx
-COMMON_LOCK="$LOCK_DIR/nginx.common.lock"
+# openresty source
+OPENRESTY_VERSION="openresty-1.13.6.1"
+OPENRESTY_FILE="$OPENRESTY_VERSION$SCR_SUFFIX"
+OPENRESTY_DOWN="https://openresty.org/download/$OPENRESTY_FILE"
+OPENRESTY_DIR="$INSTALL_DIR/openresty"
+OPENRESTY_LOCK="$LOCK_DIR/openresty.lock"
+# common dependency fo nginx
+COMMON_LOCK="$LOCK_DIR/openresty.common.lock"
 
-# nginx install function
-function install_nginx {
-    [ -f $NGINX_LOCK ] && return
+# openresty install function
+function install_openresty {
+    [ -f $OPENRESTY_LOCK ] && return
      
-    echo "install nginx..."
+    echo "install openresty..."
     cd $SRC_DIR
-    [ ! -f $NGINX_FILE ] && wget $NGINX_DOWN
-    tar -zxvf $NGINX_FILE
-    cd $NGINX_VERSION
+    [ ! -f $OPENRESTY_FILE ] && wget $OPENRESTY_DOWN
+    tar -zxvf $OPENRESTY_FILE
+    cd $OPENRESTY_VERSION
     make clean > /dev/null 2>&1
     sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' auto/cc/gcc
-    # configure see : https://nginx.org/en/docs/configure.html
-    ./configure --user=www --group=www \
-        --prefix=$NGINX_DIR \
-        --http-client-body-temp-path=$NGINX_DIR/temp/client_body \
-        --http-proxy-temp-path=$NGINX_DIR/temp/proxy \
-        --http-fastcgi-temp-path=$NGINX_DIR/temp/fcgi \
-        --http-uwsgi-temp-path=$NGINX_DIR/temp/uwsgi \
-        --http-scgi-temp-path=$NGINX_DIR/temp/scgi \
-        --with-http_stub_status_module \
-        --with-http_gzip_static_module \
-        --with-http_realip_module \
-        --with-http_ssl_module \
-        --with-http_image_filter_module
-    [ $? != 0 ] && error_exit "nginx configure err"
+    ./configure # --help 
+    [ $? != 0 ] && error_exit "openresty configure err"
     make -j $CPUS
-    [ $? != 0 ] && error_exit "nginx make err"
+    [ $? != 0 ] && error_exit "openresty make err"
     make install
-    [ $? != 0 ] && error_exit "nginx install err"
-    [ -L $INSTALL_DIR/nginx ] && rm -fr $INSTALL_DIR/nginx
-    ln -sf $NGINX_DIR $INSTALL_DIR/nginx
-    ln -sf $NGINX_DIR/sbin/nginx /usr/local/bin/nginx
-    mkdir -p $INSTALL_DIR/nginx/conf/{vhost,rewrite}
-    # for nginx temp
-    mkdir -p $NGINX_DIR/temp
+    [ $? != 0 ] && error_exit "openresty install err"
+    [ -L $SERVER_DIR/nginx ] && rm -fr $SERVER_DIR/nginx
+    ln -sf $OPENRESTY_DIR/nginx $SERVER_DIR/nginx
+    ln -sf $OPENRESTY_DIR/nginx/sbin/nginx /usr/local/bin/nginx
+    mkdir -p $OPENRESTY_DIR/nginx/conf/{vhost,rewrite}
     # default web dir
     [ -d /www/web ] && chown -h www:www /www/web
     # cp default conf and tp rewrite rule 
-    cp -f $ROOT/nginx.conf/nginx.conf $INSTALL_DIR/nginx/conf/nginx.conf
-    cp -f $ROOT/nginx.conf/thinkphp.conf $INSTALL_DIR/nginx/conf/rewrite/thinkphp.conf
+    cp -f $ROOT/nginx.conf/nginx.conf $OPENRESTY_DIR/nginx/conf/nginx.conf
+    cp -f $ROOT/nginx.conf/thinkphp.conf $OPENRESTY_DIR/nginx/conf/rewrite/thinkphp.conf
     if [ $R7 == 1 ]
     then
         # auto start script for centos7
@@ -80,35 +63,8 @@ function install_nginx {
     fi
     
     echo  
-    echo "install nginx complete."
-    touch $NGINX_LOCK
-}
-
-# pcre install function
-# nginx rewrite depend pcre
-# pcre_dir=/usr
-function install_pcre {
-    [ -f $PCRE_LOCK ] && return
-    
-    echo "install pcre..."
-    cd $SRC_DIR
-    [ ! -f $PCRE_SRC$SRC_SUFFIX ] && wget $PCRE_DOWN
-    tar -zxvf $PCRE_SRC$SRC_SUFFIX
-    cd $PCRE_SRC
-    ./configure --prefix=/usr
-    [ $? != 0 ] && error_exit "pcre configure err"
-    make
-    [ $? != 0 ] && error_exit "pcre make err"
-    make install
-    [ $? != 0 ] && error_exit "pcre install err"
-    # refresh active lib
-    ldconfig
-    cd $SRC_DIR 
-    rm -fr $PCRE_SRC
-    
-    echo
-    echo "install pcre complete."
-    touch $PCRE_LOCK
+    echo "install openresty complete."
+    touch $OPENRESTY_LOCK
 }
 
 # install common dependency
@@ -157,8 +113,7 @@ function error_exit {
 function start_install {
     [ ! -d $LOCK_DIR ] && mkdir -p $LOCK_DIR
     install_common
-    install_pcre
-    install_nginx
+    install_openresty
 }
 
 start_install
