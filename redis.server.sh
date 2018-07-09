@@ -6,8 +6,8 @@ SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
 SRC_SUFFIX=".tar.gz"
 # redis server source
-REDIS_DOWN="http://download.redis.io/releases/redis-3.2.10.tar.gz"
-REDIS_SRC="redis-3.2.10"
+REDIS_DOWN="http://download.redis.io/releases/redis-4.0.10.tar.gz"
+REDIS_SRC="redis-4.0.10"
 REDIS_DIR="$REDIS_SRC"
 REDIS_LOCK="$LOCK_DIR/redis.server.lock"
 
