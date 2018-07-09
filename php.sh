@@ -1,11 +1,6 @@
-ROOT=$(pwd)
-CPUS=`grep processor /proc/cpuinfo | wc -l`
-grep -q "release 7" /etc/redhat-release && R7=1 || R7=0
-echo $ROOT
-echo $CPUS
-echo $R7
+. ./common.sh
 
-read -p "Enter php version like 7.2.1: " PHP_VER
+read -p "Enter php version like 7.2.7: " PHP_VER
 
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"

@@ -1,9 +1,5 @@
-ROOT=$(pwd)
-CPUS=`grep processor /proc/cpuinfo | wc -l`
-grep -q "release 7" /etc/redhat-release && R7=1 || R7=0
-echo $ROOT
-echo $CPUS
-echo $R7
+. ./common.sh
+
 INSTALL_DIR="/www/server"
 CONF_DIR="$INSTALL_DIR/etc"
 SRC_DIR="$ROOT/src"
