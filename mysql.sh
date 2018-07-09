@@ -10,13 +10,14 @@ MYSQL_SRC="mysql-5.7.21"
 MYSQL_DIR="$MYSQL_SRC"
 MYSQL_LOCK="$LOCK_DIR/mysql.lock"
 # cmake tool source
-CMAKE_DOWN="https://cmake.org/files/v3.8/cmake-3.8.2.tar.gz"
-CMAKE_SRC="cmake-3.8.2"
+CMAKE_DOWN="https://cmake.org/files/v3.11/cmake-3.11.4.tar.gz"
+CMAKE_SRC="cmake-3.11.4"
 CMAKE_DIR="$CMAKE_SRC"
 CMAKE_LOCK="$LOCK_DIR/cmake.lock"
 # boost
-BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz"
-BOOST_SRC="boost_1_59_0"
+#BOOST_DOWN="https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.gz"
+BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.67.0/boost_1_67_0.tar.gz"
+BOOST_SRC="boost_1_67_0"
 BOOST_DIR="$BOOST_SRC"
 BOOST_LOCK="$LOCK_DIR/boost.lock"
 # common dependency fo mysql
