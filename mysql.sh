@@ -5,8 +5,8 @@ LOCK_DIR="$ROOT/lock"
 SRC_DIR="$ROOT/src"
 SRC_SUFFIX=".tar.gz"
 # mysql source
-MYSQL_DOWN="https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.18.tar.gz"
-MYSQL_SRC="mysql-5.7.18"
+MYSQL_DOWN="https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.21.tar.gz"
+MYSQL_SRC="mysql-5.7.21"
 MYSQL_DIR="$MYSQL_SRC"
 MYSQL_LOCK="$LOCK_DIR/mysql.lock"
 # cmake tool source
