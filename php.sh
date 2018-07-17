@@ -16,6 +16,10 @@ MHASH_LOCK="$LOCK_DIR/mhash.lock"
 MCRYPT_DOWN="https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz"
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
+# libevent not support php-7.x
+LIBEVENT_DOWN="https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz"
+LIBEVENT_SRC="libevent-2.1.8"
+LIBEVENT_LOCK="$LOCK_DIR/libevent.lock"
 # php7 source
 PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VER.tar.gz"
 PHP_SRC="php-$PHP_VER"
@@ -31,6 +35,10 @@ SWOOLE_LOCK="$LOCK_DIR/swoole.lock"
 REDIS_DOWN="https://github.com/phpredis/phpredis/archive/3.1.3.tar.gz"
 REDIS_DIR="phpredis-3.1.3"
 REDIS_LOCK="$LOCK_DIR/phpredis.lock"
+# libevent not support php-7.x
+LIBEVENT_EXT_DOWN="http://pecl.php.net/get/libevent-0.1.0.tgz"
+LIBEVENT_EXT_DIR="libevent-0.1.0"
+LIBEVENT_EXT_LOCK="$LOCK_DIR/libevent.ext.lock"
 
 # php-7.x install function
 # for nginx:
@@ -42,9 +50,9 @@ function install_php {
     [ ! -f /usr/lib/libmhash.so ] && install_mhash
     [ ! -f /usr/lib/libmcrypt.so ] && install_mcrypt
     
-    [ -f $PHP_LOCK ] && (echo 'Install locked.') && return
-    
+    [ -f $PHP_LOCK ] && (echo 'Install locked.') && return    
     echo "install php..."
+
     cd $SRC_DIR
     [ ! -f $PHP_SRC$SRC_SUFFIX ] && wget $PHP_DOWN
     tar -zxvf $PHP_SRC$SRC_SUFFIX
@@ -117,9 +125,9 @@ function install_php {
 # libiconv install function
 # iconv_dir=/usr
 function install_libiconv {
-    [ -f $ICONV_LOCK ] && return
-     
+    [ -f $ICONV_LOCK ] && return     
     echo "install libiconv..."
+
     cd $SRC_DIR
     [ ! -f $ICONV_SRC$SRC_SUFFIX ] && wget $ICONV_DOWN
     tar -zxvf $ICONV_SRC$SRC_SUFFIX
@@ -148,9 +156,9 @@ function install_libiconv {
 # mhash install function
 # mhash_dir=/usr
 function install_mhash {
-    [ -f $MHASH_LOCK ] && return
-     
+    [ -f $MHASH_LOCK ] && return     
     echo "install mhash..."
+
     cd $SRC_DIR
     [ ! -f $MHASH_SRC$SRC_SUFFIX ] && wget $MHASH_DOWN
     tar -zxvf $MHASH_SRC$SRC_SUFFIX
@@ -174,9 +182,9 @@ function install_mhash {
 # mcrypt install function
 # mcrypt_dir=/usr
 function install_mcrypt {
-    [ -f $MCRYPT_LOCK ] && return
-     
+    [ -f $MCRYPT_LOCK ] && return 
     echo "install mcrypt..."
+
     cd $SRC_DIR
     [ ! -f $MCRYPT_SRC$SRC_SUFFIX ] && wget $MCRYPT_DOWN
     tar -zxvf $MCRYPT_SRC$SRC_SUFFIX
@@ -198,6 +206,23 @@ function install_mcrypt {
     echo 
     echo "install mcrypt complete."
     touch $MCRYPT_LOCK
+}
+
+# libevent install function
+# libevent_dir=/usr/local/libevent-2.x.x
+function install_libevent {
+    [ -f $MCRYPT_LOCK ] && return
+    echo "install libevent..."
+
+    wget -c $LIBEVENT_DOWN -P /usr/local/src
+    cd /usr/local/src
+    tar -zxvf "$LIBEVENT_SRC-stable.tar.gz" && cd "$LIBEVENT_SRC-stable"
+    ./configure --prefix=/usr/local/$LIBEVENT_SRC
+    make && make install
+    
+    echo 
+    echo "install libevent complete."
+    touch $LIBEVENT_LOCK
 }
 
 # install common dependency
