@@ -58,7 +58,7 @@ function install_mysql {
         -DWITH_EMBEDDED_SERVER=1 \
         -DDOWNLOAD_BOOST=1 \
         -DDOWNLOAD_BOOST_TIMEOUT=3600 \
-        -DWITH_BOOST=/usr/src/$BOOST_SRC
+        -DWITH_BOOST=/usr/local/src/$BOOST_SRC
     [ $? != 0 ] && error_exit "mysql configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "mysql make err"
@@ -140,16 +140,17 @@ function install_cmake {
 
 # boost install function
 # mysql depend boost library
-# boost_dir=/usr/src
+# boost_dir=/usr/local/src
 function install_boost {
     [ -f $BOOST_LOCK ] && return
 
     echo "install boost..."
     cd $SRC_DIR
     [ ! -f $BOOST_SRC$SRC_SUFFIX ] && wget $BOOST_DOWN
-    cp $BOOST_SRC$SRC_SUFFIX /usr/src
-    cd /usr/src
+    cp $BOOST_SRC$SRC_SUFFIX /usr/local/src
+    cd /usr/local/src
     tar -zxvf $BOOST_SRC$SRC_SUFFIX
+    rm -fr $BOOST_SRC$SRC_SUFFIX
     
     echo
     echo "install boost complete."
