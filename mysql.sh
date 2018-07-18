@@ -14,10 +14,10 @@ CMAKE_DOWN="https://cmake.org/files/v3.11/cmake-3.11.4.tar.gz"
 CMAKE_SRC="cmake-3.11.4"
 CMAKE_DIR="$CMAKE_SRC"
 CMAKE_LOCK="$LOCK_DIR/cmake.lock"
-# boost
+# boost 1.59.0 for mysql 7.x, maybe 1.67.0 for mysql 8.x
 #BOOST_DOWN="https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.gz"
-BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.67.0/boost_1_67_0.tar.gz"
-BOOST_SRC="boost_1_67_0"
+BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz"
+BOOST_SRC="boost_1_59_0"
 BOOST_DIR="$BOOST_SRC"
 BOOST_LOCK="$LOCK_DIR/boost.lock"
 # common dependency fo mysql
@@ -157,8 +157,8 @@ function install_boost {
 }
 
 # install common dependency
-# mysql compile need boost default dir=/usr/share/doc/boost-1.53.0
-# remove centos7 default boost version is 1.53.0
+# mysql compile need boost default dir=/usr/share/doc/boost-1.59.0
+# remove centos7 default boost version is 1.59.0
 # remove system default cmake
 # mysql user:group is mysql:mysql
 function install_common {
