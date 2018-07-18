@@ -165,7 +165,7 @@ function install_boost {
 function install_common {
     [ -f $COMMON_LOCK ] && return
     yum install -y sudo wget gcc gcc-c++ ncurses ncurses-devel bison bison-devel \
-        ntp ntpdate
+        ntp ntpdate iptables iptables-services
     [ $? != 0 ] && error_exit "common dependence install err"
     
     # create user for mysql
