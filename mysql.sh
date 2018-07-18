@@ -27,7 +27,7 @@ COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 function install_mysql {
     
     [ ! -f /usr/local/bin/cmake ] && install_cmake 
-    [ ! -d /usr/src/$BOOST_SRC ] && install_boost
+    [ ! -d /usr/local/src/$BOOST_SRC ] && install_boost
 
     [ -f $MYSQL_LOCK ] && return
     
