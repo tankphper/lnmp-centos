@@ -237,7 +237,7 @@ function install_common {
         freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel \
         curl-devel patch ncurses-devel bzip2 libcap-devel sysklogd diffutils \
         re2c bison icu libicu libicu-devel net-tools psmisc vim vim-enhanced \
-        zip unzip telnet ipset lsof iptables iptables-services ntp ntpdate
+        zip unzip telnet tcpdump ipset lsof iptables iptables-services ntp ntpdate
     [ $? != 0 ] && error_exit "common dependency install err"
     
     # create user for nginx php
