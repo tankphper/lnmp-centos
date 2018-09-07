@@ -108,6 +108,8 @@ function install_php {
     if [ $R7 == 1 ]
     then
         cp -f ./sapi/fpm/php-fpm.service /usr/lib/systemd/system/
+        sed -i 's@${prefix}@/www/server/php@' /usr/lib/systemd/system/php-fpm.service
+        sed -i 's@${exec_prefix}@/www/server/php@' /usr/lib/systemd/system/php-fpm.service
         systemctl daemon-reload
         systemctl start php-fpm.service
         systemctl enable php-fpm.service
