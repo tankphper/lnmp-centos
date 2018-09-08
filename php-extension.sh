@@ -3,9 +3,9 @@
 SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
 SRC_SUFFIX=".tar.gz"
+PHPREDIS_VER=$2
 
 function add_redis {
-    PHPREDIS_VER = $2
     cd $SRC_DIR
     wget https://github.com/phpredis/phpredis/archive/$PHPREDIS_VER.tar.gz -O phpredis.tar.gz
     mkdir phpredis
