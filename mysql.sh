@@ -93,6 +93,8 @@ function install_mysql {
     $INSTALL_DIR/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
     # db dir user:group
     chown -hR mysql:mysql $INSTALL_DIR/mysql/data 
+    # slow log file
+    touch /var/log/mysql-slow.log && chown -hR mysql:root /var/log/mysql-slow.log
     # auto start script for centos6 and centos7
     cp -f ./support-files/mysql.server /etc/init.d/mysqld
     chmod +x /etc/init.d/mysqld
