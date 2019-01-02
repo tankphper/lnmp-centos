@@ -3,12 +3,13 @@
 SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
 SRC_SUFFIX=".tar.gz"
-PHPREDIS_VER=$2
+EXT_VER=${2:-"4.2.0"}
 PHP_VER=$(php --version | grep "^PHP" | awk '{print $2}')
 PHP_API_VER=$(phpize --version | grep "PHP Api Version*" | awk '{print $NF}')
 
-echo $PHP_VER
-echo $PHP_API_VER
+echo "PHP_VER:"$PHP_VER
+echo "PHP_API_VER:"$PHP_API_VER
+echo "EXT_VER:"$EXT_VER
 
 function echo_ini {
     echo "extension=/www/server/php-$PHP_VER/lib/php/extensions/no-debug-non-zts-$PHP_API_VER/$1.so" >> /www/server/php-$PHP_VER/etc/php.ini
@@ -16,7 +17,7 @@ function echo_ini {
 
 function add_redis {
     cd $SRC_DIR
-    wget https://github.com/phpredis/phpredis/archive/$PHPREDIS_VER.tar.gz -O phpredis.tar.gz
+    wget https://github.com/phpredis/phpredis/archive/$EXT_VER.tar.gz -O phpredis.tar.gz
     mkdir phpredis
     tar -zxvf phpredis.tar.gz -C phpredis --strip-components=1
     cd phpredis
@@ -42,4 +43,6 @@ function add_mcrypt {
     echo_ini mcrypt
 }
 
-add_$1
+if [ $1 ]; then
+   add_$1
+fi
