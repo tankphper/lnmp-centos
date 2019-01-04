@@ -8,6 +8,7 @@ PHP_VER=$(php --version | grep "^PHP" | awk '{print $2}')
 #PHP_VER=$(php-config --version)
 PHP_API_VER=$(phpize --version | grep "PHP Api Version*" | awk '{print $NF}')
 PHP_EXT_DIR=$(php-config --extension-dir)
+PHP_PREFIX=$(php-config --prefix)
 
 echo "PHP_VER:"$PHP_VER
 echo "PHP_API_VER:"$PHP_API_VER
@@ -15,7 +16,32 @@ echo "PHP_EXT_DIR:"$PHP_EXT_DIR
 echo "EXT_VER:"$EXT_VER
 
 function echo_ini {
-    echo "extension=/www/server/php-$PHP_VER/lib/php/extensions/no-debug-non-zts-$PHP_API_VER/$1.so" >> /www/server/php-$PHP_VER/etc/php.ini
+    echo "extension=$PHP_EXT_DIR/$1.so" >> $PHP_PREFIX/etc/php.ini
+}
+
+# --enable-async-redis require hiredis library supported
+# --enable-http2 require nghttp2 library supported
+function add_swoole {
+    local SWOOLE_VER=${EXT_VER:-"4.2.11"}
+    cd $SRC_DIR
+    [ ! -f swoole.tar.gz ] && wget https://github.com/swoole/swoole-src/archive/v$SWOOLE_VER.tar.gz -O swoole.tar.gz
+    [ ! -f swoole ] && mkdir swoole
+    tar -zxvf swoole.tar.gz -C swoole --strip-components=1
+    cd swoole
+    phpize
+    ./configure --with-php-config=/www/server/php/bin/php-config \
+    --enable-openssl \
+    --enable-async-redis \
+    --enable-mysqlnd \
+    --enable-coroutine \
+    --enable-openssl \
+    --enable-http2
+    [ $? != 0 ] && error_exit "swoole configure err"
+    make
+    [ $? != 0 ] && error_exit "swoole make err"
+    make install
+    [ $? != 0 ] && error_exit "swoole make install err"
+    echo_ini swoole
 }
 
 function add_protobuf {
