@@ -32,10 +32,10 @@ function add_swoole {
     ./configure --with-php-config=/www/server/php/bin/php-config \
     --enable-openssl \
     --enable-async-redis \
+    --enable-http2 \
     --enable-mysqlnd \
     --enable-coroutine \
-    --enable-sockets \
-    --enable-http2
+    --enable-sockets
     [ $? != 0 ] && error_exit "swoole configure err"
     make
     [ $? != 0 ] && error_exit "swoole make err"
