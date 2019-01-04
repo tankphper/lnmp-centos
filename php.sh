@@ -92,6 +92,7 @@ function install_php {
     sed -i 's@^;date.timezone.*@date.timezone = Asia/Shanghai@' $INSTALL_DIR/$PHP_DIR/etc/php.ini
     ln -sf $INSTALL_DIR/$PHP_DIR/bin/php /usr/local/bin/php
     ln -sf $INSTALL_DIR/$PHP_DIR/bin/phpize /usr/local/bin/phpize
+    ln -sf $INSTALL_DIR/$PHP_DIR/bin/php-config /usr/local/bin/php-config
     # php version
     php -v | grep -q "PHP 7" && V7=1 || V7=0
     if [ $V7 == 1 ]
