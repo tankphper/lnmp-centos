@@ -34,7 +34,7 @@ function add_swoole {
     --enable-async-redis \
     --enable-mysqlnd \
     --enable-coroutine \
-    --enable-openssl \
+    --enable-sockets \
     --enable-http2
     [ $? != 0 ] && error_exit "swoole configure err"
     make
