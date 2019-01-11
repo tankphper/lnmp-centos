@@ -56,7 +56,7 @@ function install_nginx {
     [ -d /www/web ] && chown -h www:www /www/web
     # cp default conf and tp rewrite rule 
     cp -f $ROOT/nginx.conf/nginx.conf $INSTALL_DIR/nginx/conf/nginx.conf
-    cp -f $ROOT/nginx.conf/thinkphp.conf $INSTALL_DIR/nginx/conf/rewrite/thinkphp.conf
+    cp -f $ROOT/nginx.conf/rule.conf $INSTALL_DIR/nginx/conf/rewrite/rule.conf
     if [ $R7 == 1 ]
     then
         # auto start script for centos7
