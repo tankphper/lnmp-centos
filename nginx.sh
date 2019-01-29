@@ -140,6 +140,22 @@ function install_common {
     touch $COMMON_LOCK
 }
 
+# add nginx push stream module
+function add_push_stream {
+    echo "install push stream module..."
+    cd $SRC_DIR
+    git clone http://github.com/wandenberg/nginx-push-stream-module.git
+    cd $NGINX_VERSION
+    ./configure --add-module=../nginx-push-stream-module
+    [ $? != 0 ] && error_exit "nginx configure err"
+    make -j $CPUS
+    [ $? != 0 ] && error_exit "nginx make err"
+    make install
+    [ $? != 0 ] && error_exit "nginx install err"
+    echo  
+    echo "add module complete."
+}
+
 # install error function
 function error_exit {
     echo 
@@ -157,4 +173,8 @@ function start_install {
     install_nginx
 }
 
-start_install
+if [ $1 ]; then
+    add_$1
+else
+    start_install
+fi
