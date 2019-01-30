@@ -146,14 +146,25 @@ function add_push_stream {
     cd $SRC_DIR
     git clone http://github.com/wandenberg/nginx-push-stream-module.git
     cd $NGINX_VERSION
-    ./configure --add-module=../nginx-push-stream-module
+    ./configure --user=www --group=www \
+        --prefix=$NGINX_DIR \
+        --http-client-body-temp-path=$NGINX_DIR/temp/client_body \
+        --http-proxy-temp-path=$NGINX_DIR/temp/proxy \
+        --http-fastcgi-temp-path=$NGINX_DIR/temp/fcgi \
+        --http-uwsgi-temp-path=$NGINX_DIR/temp/uwsgi \
+        --http-scgi-temp-path=$NGINX_DIR/temp/scgi \
+        --add-module=../nginx-push-stream-module
     [ $? != 0 ] && error_exit "nginx configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "nginx make err"
-    make install
-    [ $? != 0 ] && error_exit "nginx install err"
+    # don't exec make install
+    systemctl stop nginxd
+    mv -f $NGINX_DIR/sbin/nginx $NGINX_DIR/sbin/nginx.bak
+    cp -f ./objs/nginx $NGINX_DIR/sbin/
+    systemctl start nginxd
+    
     echo  
-    echo "add module complete."
+    echo "add push stream module complete."
 }
 
 # install error function
