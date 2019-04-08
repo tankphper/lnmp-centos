@@ -6,8 +6,8 @@ SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
 SRC_SUFFIX=".tar.gz"
 # redis server source
-REDIS_DOWN="http://download.redis.io/releases/redis-5.0.3.tar.gz"
-REDIS_SRC="redis-5.0.3"
+REDIS_DOWN="http://download.redis.io/releases/redis-5.0.4.tar.gz"
+REDIS_SRC="redis-5.0.4"
 REDIS_DIR="$REDIS_SRC"
 REDIS_LOCK="$LOCK_DIR/redis.server.lock"
 
@@ -32,6 +32,7 @@ function install_redis {
     sed -i 's@^protected-mode yes@protected-mode no@' $CONF_DIR/redis.conf
     sed -i 's@^bind 127.0.0.1@#bind 127.0.0.1@' $CONF_DIR/redis.conf
     sed -i 's@^# requirepass foobared@requirepass zhoumanzi@' $CONF_DIR/redis.conf
+    sed -i 's@^# rename-command CONFIG ""@rename-command CONFIG ""@' $CONF_DIR/redis.conf
     sed -i 's@^dbfilename dump.rdb@dbfilename redis.rdb@' $CONF_DIR/redis.conf
     mkdir -p /www/data
     sed -i 's@^dir ./@dir /www/data/@' $CONF_DIR/redis.conf
