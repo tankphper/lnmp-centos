@@ -62,7 +62,7 @@ function add_protobuf {
 }
 
 function add_redis {
-    local PHPREDIS_VER=${EXT_VER:-"4.2.0"}
+    local PHPREDIS_VER=${EXT_VER:-"4.3.0"}
     cd $SRC_DIR
     [ ! -f phpredis.tar.gz ] && wget https://github.com/phpredis/phpredis/archive/$PHPREDIS_VER.tar.gz -O phpredis.tar.gz
     [ ! -f phpredis ] && mkdir phpredis
