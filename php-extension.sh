@@ -22,7 +22,7 @@ function echo_ini {
 # --enable-async-redis require hiredis library supported
 # --enable-http2 require nghttp2 library supported
 function add_swoole {
-    local SWOOLE_VER=${EXT_VER:-"4.2.12"}
+    local SWOOLE_VER=${EXT_VER:-"4.3.1"}
     cd $SRC_DIR
     [ ! -f swoole.tar.gz ] && wget https://github.com/swoole/swoole-src/archive/v$SWOOLE_VER.tar.gz -O swoole.tar.gz
     [ ! -f swoole ] && mkdir swoole

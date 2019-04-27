@@ -40,7 +40,11 @@ function install_nginx {
         --with-http_gzip_static_module \
         --with-http_realip_module \
         --with-http_ssl_module \
-        --with-http_image_filter_module
+        --with-http_image_filter_module \
+        --with-stream \
+        --with-stream_realip_module \
+        --with-stream_ssl_module \
+        --with-stream_ssl_preread_module
     [ $? != 0 ] && error_exit "nginx configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "nginx make err"
