@@ -157,6 +157,15 @@ function add_push_stream {
         --http-fastcgi-temp-path=$NGINX_DIR/temp/fcgi \
         --http-uwsgi-temp-path=$NGINX_DIR/temp/uwsgi \
         --http-scgi-temp-path=$NGINX_DIR/temp/scgi \
+        --with-http_stub_status_module \
+        --with-http_gzip_static_module \
+        --with-http_realip_module \
+        --with-http_ssl_module \
+        --with-http_image_filter_module \
+        --with-stream \
+        --with-stream_realip_module \
+        --with-stream_ssl_module \
+        --with-stream_ssl_preread_module \
         --add-module=../nginx-push-stream-module
     [ $? != 0 ] && error_exit "nginx configure err"
     make -j $CPUS
