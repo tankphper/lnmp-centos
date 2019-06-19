@@ -76,7 +76,7 @@ function install_mysql {
     chown -hR mysql:mysql $INSTALL_DIR/mysql/data 
     # auto start script for centos6 and centos7
     cp -f ./support-files/mysql.server /etc/init.d/mysqld
-    chmod +x /etc/init.d/mysqld
+    chmod +x {/etc/init.d/mysqld,/www}
     # auto start when start system
     chkconfig --add mysqld
     chkconfig --level 35 mysqld on
