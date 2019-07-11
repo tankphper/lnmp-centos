@@ -9,7 +9,7 @@ PCRE_DOWN="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.g
 PCRE_SRC="pcre-8.40"
 PCRE_LOCK="$LOCK_DIR/pcre.lock"
 # nginx source
-NGINX_VERSION="nginx-1.14.0"
+NGINX_VERSION="nginx-1.16.0"
 NGINX_FILE="$NGINX_VERSION$SRC_SUFFIX"
 NGINX_DOWN="http://nginx.org/download/$NGINX_FILE"
 NGINX_DIR="$INSTALL_DIR/$NGINX_VERSION"
