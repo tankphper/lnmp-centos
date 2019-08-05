@@ -31,11 +31,13 @@ function install_openresty {
     [ $? != 0 ] && error_exit "openresty make err"
     make install
     [ $? != 0 ] && error_exit "openresty install err"
+    mkdir -p $OPENRESTY_DIR/nginx/conf/{vhost,rewrite}
+    [ ! -d $SERVER_DIR ] && mkdir -p $SERVER_DIR
     [ -L $SERVER_DIR/nginx ] && rm -fr $SERVER_DIR/nginx
     ln -sf $OPENRESTY_DIR/nginx $SERVER_DIR/nginx
     ln -sf $OPENRESTY_DIR/nginx/sbin/nginx /usr/local/bin/nginx
-    mkdir -p $OPENRESTY_DIR/nginx/conf/{vhost,rewrite}
     # default web dir
+    [ ! -d /www/web ] && mkdir -p /www/web
     [ -d /www/web ] && chown -h www:www /www/web
     # cp default conf and tp rewrite rule 
     cp -f $ROOT/nginx.conf/nginx.conf $OPENRESTY_DIR/nginx/conf/nginx.conf
