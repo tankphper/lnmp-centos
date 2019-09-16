@@ -5,9 +5,9 @@ LOCK_DIR="$ROOT/lock"
 SRC_DIR="$ROOT/src"
 SRC_SUFFIX=".tar.gz"
 # dependency of nginx
-#PCRE_DOWN="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.gz"
-PCRE_DOWN="https://github.com/manzige/resource/blob/master/pcre-8.40.tar.gz"
-PCRE_SRC="pcre-8.40"
+#PCRE_DOWN="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.43.tar.gz"
+PCRE_DOWN="https://ftp.pcre.org/pub/pcre/pcre-8.43.tar.gz"
+PCRE_SRC="pcre-8.43"
 PCRE_LOCK="$LOCK_DIR/pcre.lock"
 # nginx source
 NGINX_VERSION="nginx-1.16.0"
