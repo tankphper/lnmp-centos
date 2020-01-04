@@ -22,7 +22,7 @@ function echo_ini {
 # --enable-async-redis require hiredis library supported
 # --enable-http2 require nghttp2 library supported
 function add_swoole {
-    local SWOOLE_VER=${EXT_VER:-"4.3.3"}
+    local SWOOLE_VER=${EXT_VER:-"4.4.14"}
     cd $SRC_DIR
     [ ! -f swoole.tar.gz ] && wget https://github.com/swoole/swoole-src/archive/v$SWOOLE_VER.tar.gz -O swoole.tar.gz
     [ ! -f swoole ] && mkdir swoole
@@ -37,9 +37,9 @@ function add_swoole {
     --enable-coroutine \
     --enable-sockets
     [ $? != 0 ] && error_exit "swoole configure err"
-    make
+    make clean && make
     [ $? != 0 ] && error_exit "swoole make err"
-    make install
+    sudo make install
     [ $? != 0 ] && error_exit "swoole make install err"
     echo_ini swoole
 }
