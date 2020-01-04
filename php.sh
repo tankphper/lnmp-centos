@@ -237,7 +237,8 @@ function install_common {
     [ -f $COMMON_LOCK ] && return
     # iptables-services for R7
     yum install -y sudo wget gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel \
-        freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel libsqlite3x-devel \
+        freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel \
+        libsqlite3x-devel oniguruma-devel \
         curl-devel patch ncurses-devel bzip2 libcap-devel sysklogd diffutils \
         re2c bison icu libicu libicu-devel net-tools psmisc vim vim-enhanced \
         zip unzip telnet tcpdump ipset lsof iptables iptables-services ntp ntpdate
