@@ -37,9 +37,9 @@ function add_swoole {
     --enable-coroutine \
     --enable-sockets
     [ $? != 0 ] && error_exit "swoole configure err"
-    make clean && make
+    make
     [ $? != 0 ] && error_exit "swoole make err"
-    sudo make install
+    make install
     [ $? != 0 ] && error_exit "swoole make install err"
     echo_ini swoole
 }
