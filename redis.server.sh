@@ -31,7 +31,7 @@ function install_redis {
     # config redis
     sed -i 's@^protected-mode yes@protected-mode no@' $CONF_DIR/redis.conf
     sed -i 's@^bind 127.0.0.1@#bind 127.0.0.1@' $CONF_DIR/redis.conf
-    sed -i 's@^# requirepass foobared@requirepass zhoumanzi@' $CONF_DIR/redis.conf
+    sed -i 's@^# requirepass foobared@requirepass password@' $CONF_DIR/redis.conf
     sed -i 's@^# rename-command CONFIG ""@rename-command CONFIG ""@' $CONF_DIR/redis.conf
     sed -i 's@^dbfilename dump.rdb@dbfilename redis.rdb@' $CONF_DIR/redis.conf
     mkdir -p /www/data
