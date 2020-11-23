@@ -104,7 +104,7 @@ function install_mysql {
     service mysqld start
 
     # init empty password, set root password like this for mysql-5.7.x
-    mysql -u root -e "use mysql;alter user 'root'@'localhost' identified by 'zhoumanzi'"
+    mysql -u root -e "use mysql;alter user 'root'@'localhost' identified by 'password'"
     
     # mysql.sock dir
     mkdir -p /var/lib/mysql
