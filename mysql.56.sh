@@ -83,7 +83,7 @@ function install_mysql {
     service mysqld start
 
     # set root password for mysql-5.6.x 
-    $INSTALL_DIR/mysql/bin/mysqladmin -u root password "zhoumanzi"
+    $INSTALL_DIR/mysql/bin/mysqladmin -u root password "password"
     
     # mysql.sock dir
     mkdir -p /var/lib/mysql
