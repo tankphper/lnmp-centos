@@ -5,19 +5,19 @@ LOCK_DIR="$ROOT/lock"
 SRC_DIR="$ROOT/src"
 SRC_SUFFIX=".tar.gz"
 # mysql source
-MYSQL_DOWN="https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.23.tar.gz"
-MYSQL_SRC="mysql-5.7.23"
+MYSQL_DOWN="https://cdn.mysql.com/archives/mysql-8.0/mysql-8.0.21.tar.gz"
+MYSQL_SRC="mysql-8.0.21"
 MYSQL_DIR="$MYSQL_SRC"
 MYSQL_LOCK="$LOCK_DIR/mysql.lock"
 # cmake tool source
-CMAKE_DOWN="https://cmake.org/files/v3.11/cmake-3.11.4.tar.gz"
-CMAKE_SRC="cmake-3.11.4"
+CMAKE_DOWN="https://cmake.org/files/v3.19/cmake-3.19.2.tar.gz"
+CMAKE_SRC="cmake-3.19.2"
 CMAKE_DIR="$CMAKE_SRC"
 CMAKE_LOCK="$LOCK_DIR/cmake.lock"
 # boost 1.59.0 for mysql 5.7.x, 1.72.0 for mysql 8.x
-#BOOST_DOWN="https://dl.bintray.com/boostorg/release/1.75.0/source/boost_1_75_0.tar.gz"
-BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz"
-BOOST_SRC="boost_1_59_0"
+#BOOST_DOWN="https://dl.bintray.com/boostorg/release/1.59.0/source/boost_1_59_0.tar.gz"
+BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.75.0/boost_1_75_0.tar.gz"
+BOOST_SRC="boost_1_75_0"
 BOOST_DIR="$BOOST_SRC"
 BOOST_LOCK="$LOCK_DIR/boost.lock"
 # common dependency fo mysql
@@ -58,7 +58,10 @@ function install_mysql {
         -DWITH_EMBEDDED_SERVER=1 \
         -DDOWNLOAD_BOOST=1 \
         -DDOWNLOAD_BOOST_TIMEOUT=3600 \
-        -DWITH_BOOST=/usr/local/src/$BOOST_SRC
+        -DWITH_BOOST=/usr/local/src/$BOOST_SRC \
+        -DFORCE_INSOURCE_BUILD=1 \
+        -DCMAKE_C_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/gcc \
+        -DCMAKE_CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/g++
     [ $? != 0 ] && error_exit "mysql configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "mysql make err"
@@ -73,7 +76,7 @@ function install_mysql {
     [ -f /etc/my.cnf ] && mv /etc/my.cnf /etc/my.cnf.old
     # new config file
     [ ! -d $INSTALL_DIR/etc ] && mkdir $INSTALL_DIR/etc
-    cp -f $ROOT/mysql.conf/my.cnf $INSTALL_DIR/etc/my.cnf
+    cp -f $ROOT/mysql.8.conf/my.cnf $INSTALL_DIR/etc/my.cnf
     ln -sf $INSTALL_DIR/etc/my.cnf /etc/my.cnf
     # db file user:group
     #[ ! -d $INSTALL_DIR/mysql/data ] && mkdir $INSTALL_DIR/mysql/data
@@ -90,7 +93,7 @@ function install_mysql {
     # init db for mysql-5.7.x
     # --initialize set password to log file
     # --initialize-insecure set a empty password
-    $INSTALL_DIR/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
+    $INSTALL_DIR/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=$INSTALL_DIR/mysql
     # db dir user:group
     chown -hR mysql:mysql $INSTALL_DIR/mysql/data 
     # slow log file
@@ -166,10 +169,15 @@ function install_boost {
 # mysql user:group is mysql:mysql
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    yum install -y sudo wget gcc gcc-c++ ncurses ncurses-devel bison bison-devel \
+    yum install -y sudo git wget gcc gcc-c++ ncurses ncurses-devel bison bison-devel \
         tcpdump ntp ntpdate iptables iptables-services
     [ $? != 0 ] && error_exit "common dependence install err"
     
+    # install devtoolset, GCC 5.3 or newer is required for Mysql 8
+    wget -O /etc/yum.repos.d/slc6-devtoolset.repo http://linuxsoft.cern.ch/cern/devtoolset/slc6-devtoolset.repo
+    yum install -y centos-release-scl devtoolset-7
+    scl enable devtoolset-7 bash 
+
     # create user for mysql
     #groupadd -g 27 mysql > /dev/null 2>&1
     # -d to set user home_dir=/www
