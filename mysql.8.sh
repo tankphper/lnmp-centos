@@ -14,10 +14,10 @@ CMAKE_DOWN="https://cmake.org/files/v3.19/cmake-3.19.2.tar.gz"
 CMAKE_SRC="cmake-3.19.2"
 CMAKE_DIR="$CMAKE_SRC"
 CMAKE_LOCK="$LOCK_DIR/cmake.lock"
-# boost 1.59.0 for mysql 5.7.x, 1.72.0 for mysql 8.x
+# boost 1.59.0 for mysql 5.7.x, 1.72.0 for mysql 8.0.x
 #BOOST_DOWN="https://dl.bintray.com/boostorg/release/1.59.0/source/boost_1_59_0.tar.gz"
-BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.75.0/boost_1_75_0.tar.gz"
-BOOST_SRC="boost_1_75_0"
+BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.72.0/boost_1_72_0.tar.gz"
+BOOST_SRC="boost_1_72_0"
 BOOST_DIR="$BOOST_SRC"
 BOOST_LOCK="$LOCK_DIR/boost.lock"
 # common dependency fo mysql
