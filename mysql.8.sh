@@ -175,7 +175,11 @@ function install_common {
     
     # install devtoolset, GCC 5.3 or newer is required for Mysql 8
     wget -O /etc/yum.repos.d/slc6-devtoolset.repo http://linuxsoft.cern.ch/cern/devtoolset/slc6-devtoolset.repo
+    # update repos cache
+    yum clean all
+    yum makecache fast
     yum install -y centos-release-scl devtoolset-7
+    [ $? != 0 ] && error_exit "scl and devtoolset dependence install err"
     scl enable devtoolset-7 bash 
 
     # create user for mysql
