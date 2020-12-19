@@ -56,7 +56,7 @@ function install_mysql {
         -DDEFAULT_CHARSET=utf8mb4 \
         -DDEFAULT_COLLATION=utf8mb4_general_ci \
         -DWITH_EMBEDDED_SERVER=1 \
-        -DDOWNLOAD_BOOST=1 \
+        -DDOWNLOAD_BOOST=0 \
         -DDOWNLOAD_BOOST_TIMEOUT=3600 \
         -DWITH_BOOST=/usr/local/src/$BOOST_SRC
     [ $? != 0 ] && error_exit "mysql configure err"
@@ -143,6 +143,7 @@ function install_cmake {
 # boost install function
 # mysql depend boost library
 # boost_dir=/usr/local/src
+# if cmake option -DDOWNLOAD_BOOST=1,it will download boost auto
 function install_boost {
     [ -f $BOOST_LOCK ] && return
 
