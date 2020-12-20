@@ -241,7 +241,7 @@ function install_common {
         libsqlite3x-devel oniguruma-devel \
         curl-devel patch ncurses-devel bzip2 libcap-devel sysklogd diffutils \
         re2c bison icu libicu libicu-devel net-tools psmisc vim vim-enhanced \
-        zip unzip telnet tcpdump ipset lsof iptables iptables-services ntp ntpdate
+        zip unzip telnet tcpdump ipset lsof iptables iptables-services
     [ $? != 0 ] && error_exit "common dependency install err"
     
     # create user for nginx php
@@ -254,8 +254,6 @@ function install_common {
     useradd -U -d /www -s /sbin/nologin www > /dev/null 2>&1
     # set local timezone
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-    # syn system time to sina time
-    ntpdate tiger.sina.com.cn
     # syn hardware time to system time
     hwclock -w
     

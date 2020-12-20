@@ -168,7 +168,7 @@ function install_boost {
 function install_common {
     [ -f $COMMON_LOCK ] && return
     yum install -y sudo wget gcc gcc-c++ ncurses ncurses-devel bison bison-devel \
-        tcpdump ntp ntpdate iptables iptables-services
+        tcpdump iptables iptables-services
     [ $? != 0 ] && error_exit "common dependence install err"
     
     # create user for mysql
@@ -181,8 +181,6 @@ function install_common {
     useradd -U -d /dev/null -s /sbin/nologin mysql > /dev/null 2>&1
     # set local timezone
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-    # syn system time to sina time
-    ntpdate tiger.sina.com.cn
     # syn hardware time to system time
     hwclock -w 
    

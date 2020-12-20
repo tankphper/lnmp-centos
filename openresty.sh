@@ -91,8 +91,7 @@ function install_common {
     # iptables-services for R7
     yum install -y sudo wget gcc gcc-c++ make cmake autoconf automake \
         zlib zlib-devel openssl openssl-devel gd gd-devel \
-        telnet tcpdump ipset lsof iptables iptables-services \
-        ntp ntpdate
+        telnet tcpdump ipset lsof iptables iptables-services
     [ $? != 0 ] && error_exit "common dependence install err"
     # create user for nginx and php
     #groupadd -g 1000 www > /dev/null 2>&1
@@ -104,8 +103,6 @@ function install_common {
     useradd -U -d /www -s /sbin/nologin www > /dev/null 2>&1
     # set local timezone
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-    # syn system time to sina time
-    ntpdate tiger.sina.com.cn
     # syn hardware time to system time
     hwclock -w
    
