@@ -27,7 +27,7 @@ COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 function install_mysql {
     
     [ ! -f /usr/local/bin/cmake ] && install_cmake 
-    [ ! -d /usr/local/src/$BOOST_SRC ] && install_boost
+    #[ ! -d /usr/local/src/$BOOST_SRC ] && install_boost
 
     [ -f $MYSQL_LOCK ] && return
     
@@ -56,9 +56,9 @@ function install_mysql {
         -DDEFAULT_CHARSET=utf8mb4 \
         -DDEFAULT_COLLATION=utf8mb4_general_ci \
         -DWITH_EMBEDDED_SERVER=1 \
-        -DDOWNLOAD_BOOST=0 \
-        -DDOWNLOAD_BOOST_TIMEOUT=3600 \
-        -DWITH_BOOST=/usr/local/src/$BOOST_SRC
+        -DDOWNLOAD_BOOST=1 \
+        -DDOWNLOAD_BOOST_TIMEOUT=600 \
+        -DWITH_BOOST=/usr/local/src
     [ $? != 0 ] && error_exit "mysql configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "mysql make err"
@@ -143,7 +143,7 @@ function install_cmake {
 # boost install function
 # mysql depend boost library
 # boost_dir=/usr/local/src
-# if cmake option -DDOWNLOAD_BOOST=1,it will download boost auto
+# cmake option -DDOWNLOAD_BOOST=1 and it will download boost auto
 function install_boost {
     [ -f $BOOST_LOCK ] && return
 

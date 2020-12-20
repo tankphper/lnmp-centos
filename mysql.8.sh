@@ -14,7 +14,7 @@ CMAKE_DOWN="https://cmake.org/files/v3.19/cmake-3.19.2.tar.gz"
 CMAKE_SRC="cmake-3.19.2"
 CMAKE_DIR="$CMAKE_SRC"
 CMAKE_LOCK="$LOCK_DIR/cmake.lock"
-# boost 1.59.0 for mysql 5.7.x, 1.72.0 for mysql 8.0.x
+# boost 1.59.0 for mysql-5.7.x, 1.72.0 for mysql-8.0.x
 #BOOST_DOWN="https://dl.bintray.com/boostorg/release/1.59.0/source/boost_1_59_0.tar.gz"
 BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.72.0/boost_1_72_0.tar.gz"
 BOOST_SRC="boost_1_72_0"
@@ -26,8 +26,9 @@ COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 # mysql install function
 function install_mysql {
     
+    [ ! -f /usr/bin/scl ] && install_devtool
     [ ! -f /usr/local/bin/cmake ] && install_cmake 
-    [ ! -d /usr/local/src/$BOOST_SRC ] && install_boost
+    #[ ! -d /usr/local/src/$BOOST_SRC ] && install_boost
 
     [ -f $MYSQL_LOCK ] && return
     
@@ -56,9 +57,9 @@ function install_mysql {
         -DDEFAULT_CHARSET=utf8mb4 \
         -DDEFAULT_COLLATION=utf8mb4_general_ci \
         -DWITH_EMBEDDED_SERVER=1 \
-        -DDOWNLOAD_BOOST=0 \
-        -DDOWNLOAD_BOOST_TIMEOUT=3600 \
-        -DWITH_BOOST=/usr/local/src/$BOOST_SRC \
+        -DDOWNLOAD_BOOST=1 \
+        -DDOWNLOAD_BOOST_TIMEOUT=600 \
+        -DWITH_BOOST=/usr/local/src \
         -DFORCE_INSOURCE_BUILD=1 \
         -DCMAKE_C_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/gcc \
         -DCMAKE_CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/g++
@@ -90,7 +91,7 @@ function install_mysql {
     # refresh active lib
     ldconfig
     
-    # init db for mysql-5.7.x
+    # init db for mysql-5.7.x and mysql-8.0.x
     # --initialize set password to log file
     # --initialize-insecure set a empty password
     $INSTALL_DIR/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=$INSTALL_DIR/mysql
@@ -98,7 +99,7 @@ function install_mysql {
     chown -hR mysql:mysql $INSTALL_DIR/mysql/data 
     # slow log file
     touch /var/log/mysql-slow.log && chown -hR mysql:root /var/log/mysql-slow.log
-    # auto start script for centos6 and centos7
+    # auto start script for Centos 6 and Centos 7 and Centos 8
     cp -f ./support-files/mysql.server /etc/init.d/mysqld
     chmod +x /etc/init.d/mysqld
     # auto start when start system
@@ -106,7 +107,7 @@ function install_mysql {
     chkconfig --level 35 mysqld on
     service mysqld start
 
-    # init empty password, set root password like this for mysql-5.7.x
+    # init empty password, set root password like this for mysql-5.7.x and mysql-8.0.xx
     mysql -u root -e "use mysql;alter user 'root'@'localhost' identified by 'password'"
     
     # mysql.sock dir
@@ -146,7 +147,7 @@ function install_cmake {
 # boost install function
 # mysql depend boost library
 # boost_dir=/usr/local/src
-# if cmake option -DDOWNLOAD_BOOST=1,it will download boost auto
+# cmake option -DDOWNLOAD_BOOST=1 and it will download boost auto
 function install_boost {
     [ -f $BOOST_LOCK ] && return
 
@@ -163,26 +164,29 @@ function install_boost {
     touch $BOOST_LOCK
 }
 
+# Centos 7 install devtoolset
+# GCC 5.3 or newer is required for Mysql 8
+function install_devtool {
+    # install devtool repos
+    wget -O /etc/yum.repos.d/slc6-devtoolset.repo http://linuxsoft.cern.ch/cern/devtoolset/slc6-devtoolset.repo
+    # update repos cache
+    yum clean all && yum makecache fast
+    yum install -y centos-release-scl devtoolset-7
+    [ $? != 0 ] && error_exit "devtoolset dependence install err"
+    [ ! -f /usr/bin/scl ] && error_exit "scl install err"
+    scl enable devtoolset-7 bash
+}
+
 # install common dependency
-# mysql 8.0.x compile need boost default dir=/usr/share/doc/boost-1.72.0
-# remove centos7 default boost version is 1.59.0
+# mysql-8.0.x compile need boost default dir=/usr/share/doc/boost-1.72.0
 # remove system default cmake
 # mysql user:group is mysql:mysql
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    yum install -y sudo git wget gcc gcc-c++ ncurses ncurses-devel bison bison-devel \
+    yum install -y sudo git wget gcc gcc-c++ ncurses ncurses-devel bison \
         tcpdump iptables iptables-services
     [ $? != 0 ] && error_exit "common dependence install err"
     
-    # install devtoolset, GCC 5.3 or newer is required for Mysql 8
-    wget -O /etc/yum.repos.d/slc6-devtoolset.repo http://linuxsoft.cern.ch/cern/devtoolset/slc6-devtoolset.repo
-    # update repos cache
-    yum clean all
-    yum makecache fast
-    yum install -y centos-release-scl devtoolset-7
-    [ $? != 0 ] && error_exit "scl and devtoolset dependence install err"
-    scl enable devtoolset-7 bash 
-
     # create user for mysql
     #groupadd -g 27 mysql > /dev/null 2>&1
     # -d to set user home_dir=/www
