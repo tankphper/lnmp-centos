@@ -27,7 +27,7 @@ COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 function install_mysql {
     
     [ ! -f /usr/local/bin/cmake ] && install_cmake 
-    #[ ! -d /usr/local/src/$BOOST_SRC ] && install_boost
+    [ ! -d /usr/local/src/$BOOST_SRC ] && install_boost
 
     [ -f $MYSQL_LOCK ] && return
     
@@ -56,9 +56,9 @@ function install_mysql {
         -DDEFAULT_CHARSET=utf8mb4 \
         -DDEFAULT_COLLATION=utf8mb4_general_ci \
         -DWITH_EMBEDDED_SERVER=1 \
-        -DDOWNLOAD_BOOST=1 \
+        -DDOWNLOAD_BOOST=0 \
         -DDOWNLOAD_BOOST_TIMEOUT=600 \
-        -DWITH_BOOST=/usr/local/src
+        -DWITH_BOOST=/usr/local/src/$BOOST_SRC
     [ $? != 0 ] && error_exit "mysql configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "mysql make err"
@@ -166,7 +166,7 @@ function install_boost {
 # mysql user:group is mysql:mysql
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    yum install -y sudo wget gcc gcc-c++ ncurses ncurses-devel bison bison-devel \
+    yum install -y sudo wget gcc gcc-c++ ncurses ncurses-devel bison \
         tcpdump iptables iptables-services
     [ $? != 0 ] && error_exit "common dependence install err"
     
