@@ -36,11 +36,11 @@ function install_redis {
     sed -i 's@^dbfilename dump.rdb@dbfilename redis.rdb@' $CONF_DIR/redis.conf
     mkdir -p /www/data
     sed -i 's@^dir ./@dir /www/data/@' $CONF_DIR/redis.conf
-    if [ $R7 == 1 ]
+    if [ $VERS -ge 7 ]
     then
         # systemctl require redis run non-daemonised
         sed -i 's@^daemonize yes@daemonize no@' $CONF_DIR/redis.conf
-        # auto start script for centos7
+        # auto start script for Centos 7 and Centos 8
         cp $ROOT/redis.server.conf/redis.init.R7 /usr/lib/systemd/system/redis.service 
         systemctl daemon-reload
         systemctl start redis.service

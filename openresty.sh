@@ -42,7 +42,7 @@ function install_openresty {
     # cp default conf and tp rewrite rule 
     cp -f $ROOT/nginx.conf/nginx.conf $OPENRESTY_DIR/nginx/conf/nginx.conf
     cp -f $ROOT/nginx.conf/rule.conf $OPENRESTY_DIR/nginx/conf/rewrite/rule.conf
-    if [ $R7 == 1 ]
+    if [ $VERS -ge 7 ]
     then
         # auto start script for centos7
         cp -f $ROOT/nginx.conf/nginx.init.R7 /usr/lib/systemd/system/nginxd.service
@@ -88,7 +88,7 @@ function add_module {
 # nginx user:group is www:www
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    # iptables-services for R7
+    # iptables-services for Centos 7 and Centos 8
     yum install -y sudo wget gcc gcc-c++ make cmake autoconf automake \
         zlib zlib-devel openssl openssl-devel gd gd-devel \
         telnet tcpdump ipset lsof iptables iptables-services

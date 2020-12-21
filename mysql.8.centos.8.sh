@@ -5,34 +5,39 @@ LOCK_DIR="$ROOT/lock"
 SRC_DIR="$ROOT/src"
 SRC_SUFFIX=".tar.gz"
 # mysql source
-MYSQL_DOWN="https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.23.tar.gz"
-MYSQL_SRC="mysql-5.7.23"
+MYSQL_DOWN="https://cdn.mysql.com/archives/mysql-8.0/mysql-8.0.21.tar.gz"
+MYSQL_SRC="mysql-8.0.21"
 MYSQL_DIR="$MYSQL_SRC"
 MYSQL_LOCK="$LOCK_DIR/mysql.lock"
 # cmake tool source
-CMAKE_DOWN="https://cmake.org/files/v3.11/cmake-3.11.4.tar.gz"
-CMAKE_SRC="cmake-3.11.4"
+CMAKE_DOWN="https://cmake.org/files/v3.19/cmake-3.19.2.tar.gz"
+CMAKE_SRC="cmake-3.19.2"
 CMAKE_DIR="$CMAKE_SRC"
 CMAKE_LOCK="$LOCK_DIR/cmake.lock"
-# boost 1.59.0 for mysql 5.7.x, 1.72.0 for mysql 8.x
-#BOOST_DOWN="https://dl.bintray.com/boostorg/release/1.75.0/source/boost_1_75_0.tar.gz"
-BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz"
-BOOST_SRC="boost_1_59_0"
+# boost 1.59.0 for mysql 5.7.x, 1.72.0 for mysql 8.0.x
+#BOOST_DOWN="https://dl.bintray.com/boostorg/release/1.59.0/source/boost_1_59_0.tar.gz"
+BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.72.0/boost_1_72_0.tar.gz"
+BOOST_SRC="boost_1_72_0"
 BOOST_DIR="$BOOST_SRC"
 BOOST_LOCK="$LOCK_DIR/boost.lock"
+# mysql-8.0.x in Centos 8 require rpcgen
+RPCGEN_DOWN="https://github.com/thkukuk/rpcsvc-proto/releases/download/v1.4.2/rpcsvc-proto-1.4.2.tar.xz"
+RPCGEN_SRC="rpcsvc-proto-1.4.2"
+RPCGEN_LOCK="$LOCK_DIR/rpcgen.lock"
 # common dependency fo mysql
 COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 
 # mysql install function
 function install_mysql {
-    
-    [ ! -f /usr/local/bin/cmake ] && install_cmake 
+
+    [ ! -f /usr/bin/rpcgen ] && install_rpcgen
+    [ ! -f /usr/local/bin/cmake ] && install_cmake
     #[ ! -d /usr/local/src/$BOOST_SRC ] && install_boost
 
     [ -f $MYSQL_LOCK ] && return
-    
+
     echo "install mysql..."
-    
+
     cd $SRC_DIR
     [ ! -f $MYSQL_SRC$SRC_SUFFIX ] && wget $MYSQL_DOWN
     tar -zxvf $MYSQL_SRC$SRC_SUFFIX
@@ -58,7 +63,8 @@ function install_mysql {
         -DWITH_EMBEDDED_SERVER=1 \
         -DDOWNLOAD_BOOST=1 \
         -DDOWNLOAD_BOOST_TIMEOUT=600 \
-        -DWITH_BOOST=/usr/local/src
+        -DWITH_BOOST=/usr/local/src \
+        -DFORCE_INSOURCE_BUILD=1
     [ $? != 0 ] && error_exit "mysql configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "mysql make err"
@@ -73,7 +79,7 @@ function install_mysql {
     [ -f /etc/my.cnf ] && mv /etc/my.cnf /etc/my.cnf.old
     # new config file
     [ ! -d $INSTALL_DIR/etc ] && mkdir $INSTALL_DIR/etc
-    cp -f $ROOT/mysql.conf/my.cnf $INSTALL_DIR/etc/my.cnf
+    cp -f $ROOT/mysql.8.conf/my.cnf $INSTALL_DIR/etc/my.cnf
     ln -sf $INSTALL_DIR/etc/my.cnf /etc/my.cnf
     # db file user:group
     #[ ! -d $INSTALL_DIR/mysql/data ] && mkdir $INSTALL_DIR/mysql/data
@@ -86,16 +92,16 @@ function install_mysql {
     echo "$INSTALL_DIR/mysql" > /etc/ld.so.conf.d/mysql-wdl.conf
     # refresh active lib
     ldconfig
-    
-    # init db for mysql-5.7.x
+
+    # init db for mysql-5.7.x and mysql-8.0.x
     # --initialize set password to log file
     # --initialize-insecure set a empty password
-    $INSTALL_DIR/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=$INSTALL_DIR/mysql --datadir=$INSTALL_DIR/mysql/data
+    $INSTALL_DIR/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=$INSTALL_DIR/mysql
     # db dir user:group
-    chown -hR mysql:mysql $INSTALL_DIR/mysql/data 
+    chown -hR mysql:mysql $INSTALL_DIR/mysql/data
     # slow log file
     touch /var/log/mysql-slow.log && chown -hR mysql:root /var/log/mysql-slow.log
-    # auto start script for centos6 and centos7
+    # auto start script for Centos 6 and Centos 7 and Centos 8
     cp -f ./support-files/mysql.server /etc/init.d/mysqld
     chmod +x /etc/init.d/mysqld
     # auto start when start system
@@ -103,14 +109,14 @@ function install_mysql {
     chkconfig --level 35 mysqld on
     service mysqld start
 
-    # init empty password, set root password like this for mysql-5.7.x
+    # init empty password, set root password like this for mysql-5.7.x and mysql-8.0.x
     mysql -u root -e "use mysql;alter user 'root'@'localhost' identified by 'password'"
-    
+
     # mysql.sock dir
     mkdir -p /var/lib/mysql
     [ -f /tmp/mysql.sock ] && ln -sf /tmp/mysql.sock /var/lib/mysql/
-    
-    echo  
+
+    echo
     echo "install mysql complete."
     touch $MYSQL_LOCK
 }
@@ -154,46 +160,70 @@ function install_boost {
     cd /usr/local/src
     tar -zxvf $BOOST_SRC$SRC_SUFFIX
     rm -fr $BOOST_SRC$SRC_SUFFIX
-    
+
     echo
     echo "install boost complete."
     touch $BOOST_LOCK
 }
 
+# mysql-8.0.x in Centos 8 require rpcgen
+function install_rpcgen {
+    [ -f $RPCGEN_LOCK ] && return
+
+    echo "install rcpgen..."
+    cd $SRC_DIR
+    wget $RPCGEN_DOWN
+    xz -d $RPCGEN_SRC.tar.xz
+    tar -xvf $RPCGEN_SRC.tar
+    cd $RPCGEN_SRC
+    ./configure
+    [ $? != 0 ] && error_exit "rpcgen configure err"
+    make
+    [ $? != 0 ] && error_exit "rpcgen make err"
+    make install
+    [ $? != 0 ] && error_exit "rpcgen install err"
+    cd $SRC_DIR
+
+    echo
+    echo "install rpcgen complete."
+    touch $RPCGEN_LOCK
+}
+
 # install common dependency
-# mysql compile need boost default dir=/usr/share/doc/boost-1.59.0
+# mysql 8.0.x compile require boost default dir=/usr/share/doc/boost-1.72.0
+# mysql 8.0.x require gcc 5.3 or newer
 # remove system default cmake
 # mysql user:group is mysql:mysql
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    yum install -y sudo wget gcc gcc-c++ ncurses ncurses-devel bison bison-devel \
+    yum install -y sudo git wget gcc gcc-c++ ncurses ncurses-devel bison libtirpc-devel rpcbind \
         tcpdump iptables iptables-services
     [ $? != 0 ] && error_exit "common dependence install err"
-    
+
     # create user for mysql
     #groupadd -g 27 mysql > /dev/null 2>&1
     # -d to set user home_dir=/www
     # -s to set user login shell=/sbin/nologin, you also to set /bin/bash
     #useradd -g 27 -u 27 -d /dev/null -s /sbin/nologin mysql > /dev/null 2>&1
-    
+
     # -U create a group with the same name as the user. so it can instead groupadd and useradd
     useradd -U -d /dev/null -s /sbin/nologin mysql > /dev/null 2>&1
     # set local timezone
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
     # syn hardware time to system time
-    hwclock -w 
-   
-    echo 
+    hwclock -w
+
+    echo
     echo "install common dependency complete."
     touch $COMMON_LOCK
 }
 
 # install error function
 function error_exit {
-    echo 
-    echo 
+    echo
+    echo
     echo "Install error :$1--------"
-    echo 
+    echo
     exit
 }
 
