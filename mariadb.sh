@@ -154,7 +154,7 @@ function install_nettle {
 # mariadb user:group is mariadb:mariadb
 function install_common {
     [ -f $COMMON_LOCK ] && return
-    yum install -y sudo wget gcc gcc-c++ ncurses ncurses-devel bison bison-devel
+    yum install -y sudo wget gcc gcc-c++ ncurses ncurses-devel bison
     [ $? != 0 ] && error_exit "common dependence install err"
     
     # create user for mariadb
