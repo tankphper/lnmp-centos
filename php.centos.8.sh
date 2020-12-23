@@ -1,6 +1,6 @@
 . ./common.sh
 
-read -p "Enter php version like 7.2.26,7.4.13: " PHP_VERSION
+read -p "Enter php version like 7.2.26,7.4.13,8.0.0: " PHP_VERSION
 
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
