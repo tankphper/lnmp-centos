@@ -84,7 +84,8 @@ function install_php {
     ln -sf $INSTALL_DIR/$PHP_DIR/bin/php-config /usr/local/bin/php-config
     # php version
     php -v | grep -q "PHP 7" && V7=1 || V7=0
-    if [ $V7 == 1 ]
+    php -v | grep -q "PHP 8" && V8=1 || V8=0
+    if [ $V7 -eq 1 || $V8 -eq 1 ]
     then
         cp -f $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf.default $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf
         cp -f $INSTALL_DIR/$PHP_DIR/etc/php-fpm.d/www.conf.default $INSTALL_DIR/$PHP_DIR/etc/php-fpm.d/www.conf
