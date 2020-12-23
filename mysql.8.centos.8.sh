@@ -107,7 +107,8 @@ function install_mysql {
     # auto start when start system
     chkconfig --add mysqld
     chkconfig --level 35 mysqld on
-    service mysqld start
+    #service mysqld start
+    systemctl start mysqld
 
     # init empty password, set root password like this for mysql-5.7.x and mysql-8.0.x
     mysql -u root -e "use mysql;alter user 'root'@'localhost' identified by 'password'"
