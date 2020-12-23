@@ -147,8 +147,7 @@ function add_push_stream {
     cd $SRC_DIR
     git clone http://github.com/wandenberg/nginx-push-stream-module.git
     cd $NGINX_VERSION
-    ./configure --user=www --group=www \
-        --prefix=$NGINX_DIR \
+    ./configure --user=www --group=www --prefix=$NGINX_DIR \
         --http-client-body-temp-path=$NGINX_DIR/temp/client_body \
         --http-proxy-temp-path=$NGINX_DIR/temp/proxy \
         --http-fastcgi-temp-path=$NGINX_DIR/temp/fcgi \
