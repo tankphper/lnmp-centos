@@ -1,15 +1,14 @@
 . ./common.sh
 
-INSTALL_DIR="/usr/local"
-SERVER_DIR="/www/server"
+INSTALL_DIR="/www/server"
 LOCK_DIR="$ROOT/lock"
 SRC_DIR="$ROOT/src"
 SRC_SUFFIX=".tar.gz"
 # openresty source
-OPENRESTY_VERSION="openresty-1.13.6.2"
+OPENRESTY_VERSION="openresty-1.19.3.1"
 OPENRESTY_FILE="$OPENRESTY_VERSION$SRC_SUFFIX"
 OPENRESTY_DOWN="https://openresty.org/download/$OPENRESTY_FILE"
-OPENRESTY_DIR="$INSTALL_DIR/openresty"
+OPENRESTY_DIR="$INSTALL_DIR/$OPENRESTY_VERSION"
 OPENRESTY_LOCK="$LOCK_DIR/openresty.lock"
 # common dependency fo nginx
 COMMON_LOCK="$LOCK_DIR/openresty.common.lock"
@@ -25,16 +24,15 @@ function install_openresty {
     cd $OPENRESTY_VERSION
     make clean > /dev/null 2>&1
     sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' auto/cc/gcc
-    ./configure # --help 
+    ./configure --user=www --group=www --prefix=$OPENRESTY_DIR
     [ $? != 0 ] && error_exit "openresty configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "openresty make err"
     make install
     [ $? != 0 ] && error_exit "openresty install err"
     mkdir -p $OPENRESTY_DIR/nginx/conf/{vhost,rewrite}
-    [ ! -d $SERVER_DIR ] && mkdir -p $SERVER_DIR
-    [ -L $SERVER_DIR/nginx ] && rm -fr $SERVER_DIR/nginx
-    ln -sf $OPENRESTY_DIR/nginx $SERVER_DIR/nginx
+    [ -L $INSTALL_DIR/nginx ] && rm -fr $INSTALL_DIR/nginx
+    ln -sf $OPENRESTY_DIR/nginx $INSTALL_DIR/nginx
     ln -sf $OPENRESTY_DIR/nginx/sbin/nginx /usr/local/bin/nginx
     # default web dir
     [ ! -d /www/web ] && mkdir -p /www/web
@@ -71,7 +69,8 @@ function add_module {
     cd $SRC_DIR
     git clone http://github.com/wandenberg/nginx-push-stream-module.git
     cd $OPENRESTY_VERSION
-    ./configure --add-module=../nginx-push-stream-module
+    ./configure --user=www --group=www --prefix=$OPENRESTY_DIR \
+           --add-module=../nginx-push-stream-module
     [ $? != 0 ] && error_exit "openresty configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "openresty make err"
@@ -127,7 +126,7 @@ function start_install {
     install_openresty
 }
 
-if [ $1 = "module" ]
+if [[ $1 = "module" ]]
 then
     add_module
 else
