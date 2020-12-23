@@ -13,7 +13,7 @@ ICONV_LOCK="$LOCK_DIR/iconv.lock"
 MHASH_DOWN="https://downloads.sourceforge.net/project/mhash/mhash/0.9.9.9/mhash-0.9.9.9.tar.gz"
 MHASH_SRC="mhash-0.9.9.9"
 MHASH_LOCK="$LOCK_DIR/mhash.lock"
-# php-7.2.x need compile https://pecl.php.net/get/mcrypt-1.0.1.tgz by handle and add mcrypt.so to php.ini
+# php-7.2.x or newer need compile https://pecl.php.net/get/mcrypt-1.0.1.tgz by handle and add mcrypt.so to php.ini
 MCRYPT_DOWN="https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz"
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
@@ -21,7 +21,7 @@ MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
 LIBEVENT_DOWN="https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz"
 LIBEVENT_SRC="libevent-2.1.8"
 LIBEVENT_LOCK="$LOCK_DIR/libevent.lock"
-# php7 source
+# php source
 PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VERSION.tar.gz"
 PHP_SRC="php-$PHP_VERSION"
 PHP_DIR="$PHP_SRC"
@@ -32,7 +32,7 @@ COMMON_LOCK="$LOCK_DIR/php.common.lock"
 # php-7.x install function
 # for nginx:
 # --enable-fpm --with-fpm-user=www --with-fpm-group=www
-# no zend guard loader for php7
+# no zend guard loader for php-7.x
 function install_php {
     
     [ ! -f /usr/lib64/libiconv.so ] && install_libiconv
@@ -51,7 +51,7 @@ function install_php {
     ./configure --prefix=$INSTALL_DIR/$PHP_DIR \
         --with-config-file-path=$INSTALL_DIR/$PHP_DIR/etc \
         --enable-mysqlnd --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
-        --with-iconv-dir=/usr \
+        --with-iconv --with-iconv-dir=/usr/local/libiconv \
         --with-freetype-dir --with-jpeg-dir \
         --with-png-dir --with-zlib \
         --with-libxml-dir=/usr --enable-xml \
@@ -124,12 +124,7 @@ function install_libiconv {
     cd $SRC_DIR
     [ ! -f $ICONV_SRC$SRC_SUFFIX ] && wget $ICONV_DOWN
     tar -zxvf $ICONV_SRC$SRC_SUFFIX && cd $ICONV_SRC
-    # for Centos 7 start
-    cd srclib
-    sed -i -e '/gets is a security/d' stdio.in.h
-    cd ..
-    # end
-    ./configure --prefix=/usr
+    ./configure --prefix=/usr/local/libiconv
     [ $? != 0 ] && error_exit "libiconv configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "libiconv make err"
