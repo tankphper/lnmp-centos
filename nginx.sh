@@ -30,8 +30,7 @@ function install_nginx {
     make clean > /dev/null 2>&1
     sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' auto/cc/gcc
     # configure see : https://nginx.org/en/docs/configure.html
-    ./configure --user=www --group=www \
-        --prefix=$NGINX_DIR \
+    ./configure --user=www --group=www --prefix=$NGINX_DIR \
         --http-client-body-temp-path=$NGINX_DIR/temp/client_body \
         --http-proxy-temp-path=$NGINX_DIR/temp/proxy \
         --http-fastcgi-temp-path=$NGINX_DIR/temp/fcgi \
