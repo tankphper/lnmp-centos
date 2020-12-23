@@ -24,7 +24,7 @@ BOOST_LOCK="$LOCK_DIR/boost.lock"
 RPCGEN_DOWN="https://github.com/thkukuk/rpcsvc-proto/releases/download/v1.4.2/rpcsvc-proto-1.4.2.tar.xz"
 RPCGEN_SRC="rpcsvc-proto-1.4.2"
 RPCGEN_LOCK="$LOCK_DIR/rpcgen.lock"
-# common dependency fo mysql
+# common dRPCGEN_SRCependency fo mysql
 COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 
 # mysql install function
@@ -184,6 +184,7 @@ function install_rpcgen {
     make install
     [ $? != 0 ] && error_exit "rpcgen install err"
     cd $SRC_DIR
+    rm -fr $RPCGEN_SRC
 
     echo
     echo "install rpcgen complete."

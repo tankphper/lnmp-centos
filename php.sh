@@ -216,15 +216,23 @@ function install_mcrypt {
 # libevent install function
 # libevent_dir=/usr/local/libevent-2.x.x
 function install_libevent {
-    [ -f $MCRYPT_LOCK ] && return
+    [ -f $LIBEVENT_LOCK ] && return
     echo "install libevent..."
 
     wget -c $LIBEVENT_DOWN -P /usr/local/src
     cd /usr/local/src
     tar -zxvf "$LIBEVENT_SRC-stable.tar.gz" && cd "$LIBEVENT_SRC-stable"
     ./configure --prefix=/usr/local/$LIBEVENT_SRC
-    make && make install
-    
+    [ $? != 0 ] && error_exit "libevent configure err"
+    make
+    [ $? != 0 ] && error_exit "libevent make err"
+    make install
+    [ $? != 0 ] && error_exit "libevent install err"
+    # refresh active lib
+    ldconfig
+    cd $SRC_DIR
+    rm -fr $LIBEVENT_SRC
+
     echo 
     echo "install libevent complete."
     touch $LIBEVENT_LOCK

@@ -1,6 +1,6 @@
 . ./common.sh
 
-read -p "Enter php version like 7.2.26,7.4.1: " PHP_VER
+read -p "Enter php version like 7.2.26,7.4.13: " PHP_VERSION
 
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
@@ -22,24 +22,12 @@ LIBEVENT_DOWN="https://github.com/libevent/libevent/releases/download/release-2.
 LIBEVENT_SRC="libevent-2.1.8"
 LIBEVENT_LOCK="$LOCK_DIR/libevent.lock"
 # php7 source
-PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VER.tar.gz"
-PHP_SRC="php-$PHP_VER"
+PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VERSION.tar.gz"
+PHP_SRC="php-$PHP_VERSION"
 PHP_DIR="$PHP_SRC"
 PHP_LOCK="$LOCK_DIR/php.lock"
 # common dependency fo php
 COMMON_LOCK="$LOCK_DIR/php.common.lock"
-# extensions for php
-SWOOLE_DOWN="https://github.com/swoole/swoole-src/archive/v1.9.16.tar.gz"
-SWOOLE_DIR="swoole-src-1.9.16"
-SWOOLE_LOCK="$LOCK_DIR/swoole.lock"
-# above 2.2.8 only for php7
-REDIS_DOWN="https://github.com/phpredis/phpredis/archive/3.1.3.tar.gz"
-REDIS_DIR="phpredis-3.1.3"
-REDIS_LOCK="$LOCK_DIR/phpredis.lock"
-# libevent not support php-7.x
-LIBEVENT_EXT_DOWN="http://pecl.php.net/get/libevent-0.1.0.tgz"
-LIBEVENT_EXT_DIR="libevent-0.1.0"
-LIBEVENT_EXT_LOCK="$LOCK_DIR/libevent.ext.lock"
 
 # php-7.x install function
 # for nginx:
@@ -47,9 +35,10 @@ LIBEVENT_EXT_LOCK="$LOCK_DIR/libevent.ext.lock"
 # no zend guard loader for php7
 function install_php {
     
-    [ ! -f /usr/lib/libiconv.so ] && install_libiconv
-    [ ! -f /usr/lib/libmhash.so ] && install_mhash
-    [ ! -f /usr/lib/libmcrypt.so ] && install_mcrypt
+    [ ! -f /usr/lib64/libiconv.so ] && install_libiconv
+    [ ! -f /usr/lib64/libmhash.so ] && install_mhash
+    [ ! -f /usr/lib64/libmcrypt.so ] && install_mcrypt
+    [ ! -f /usr/include/oniguruma.h ] && install_oniguruma
     
     [ -f $PHP_LOCK ] && (echo 'Install locked.') && return    
     echo "install php..."
@@ -134,8 +123,7 @@ function install_libiconv {
 
     cd $SRC_DIR
     [ ! -f $ICONV_SRC$SRC_SUFFIX ] && wget $ICONV_DOWN
-    tar -zxvf $ICONV_SRC$SRC_SUFFIX
-    cd $ICONV_SRC
+    tar -zxvf $ICONV_SRC$SRC_SUFFIX && cd $ICONV_SRC
     # for centos7 start
     cd srclib
     sed -i -e '/gets is a security/d' stdio.in.h
@@ -165,8 +153,7 @@ function install_mhash {
 
     cd $SRC_DIR
     [ ! -f $MHASH_SRC$SRC_SUFFIX ] && wget $MHASH_DOWN
-    tar -zxvf $MHASH_SRC$SRC_SUFFIX
-    cd $MHASH_SRC
+    tar -zxvf $MHASH_SRC$SRC_SUFFIX && cd $MHASH_SRC
     ./configure --prefix=/usr
     [ $? != 0 ] && error_exit "mhash configure err"
     make
@@ -191,8 +178,7 @@ function install_mcrypt {
 
     cd $SRC_DIR
     [ ! -f $MCRYPT_SRC$SRC_SUFFIX ] && wget $MCRYPT_DOWN
-    tar -zxvf $MCRYPT_SRC$SRC_SUFFIX
-    cd $MCRYPT_SRC
+    tar -zxvf $MCRYPT_SRC$SRC_SUFFIX && cd $MCRYPT_SRC
     ./configure --prefix=/usr
     [ $? != 0 ] && error_exit "mcrypt configure err"
     make
@@ -215,18 +201,43 @@ function install_mcrypt {
 # libevent install function
 # libevent_dir=/usr/local/libevent-2.x.x
 function install_libevent {
-    [ -f $MCRYPT_LOCK ] && return
+    [ -f $LIBEVENT_LOCK ] && return
     echo "install libevent..."
-
-    wget -c $LIBEVENT_DOWN -P /usr/local/src
-    cd /usr/local/src
+    
+    cd $SRC_DIR
+    [ ! -f "$LIBEVENT_SRC-stable.tar.gz" ] && wget -c $LIBEVENT_DOWN
     tar -zxvf "$LIBEVENT_SRC-stable.tar.gz" && cd "$LIBEVENT_SRC-stable"
     ./configure --prefix=/usr/local/$LIBEVENT_SRC
-    make && make install
-    
+    [ $? != 0 ] && error_exit "libevent configure err"
+    make
+    [ $? != 0 ] && error_exit "libevent make err"
+    make install
+    [ $? != 0 ] && error_exit "libevent install err"
+    # refresh active lib
+    ldconfig
+    cd $SRC_DIR
+    rm -fr "$LIBEVENT_SRC-stable"
+
     echo 
     echo "install libevent complete."
     touch $LIBEVENT_LOCK
+}
+
+# mbstring depend oniguruma
+# Centos 8 install oniguruma
+function install_oniguruma {
+    cd $SRC_DIR
+    wget https://github.com/kkos/oniguruma/archive/v6.9.4.tar.gz -O oniguruma-6.9.4.tar.gz
+    tar -zxvf oniguruma-6.9.4.tar.gz && cd oniguruma-6.9.4
+    ./autogen.sh && ./configure --prefix=/usr
+    [ $? != 0 ] && error_exit "oniguruma configure err"
+    make
+    [ $? != 0 ] && error_exit "oniguruma make err"
+    make install
+    [ $? != 0 ] && error_exit "oniguruma install err"
+    
+    cd $SRC_DIR
+    rm -fr oniguruma-6.9.4
 }
 
 # install common dependency
@@ -238,11 +249,12 @@ function install_common {
     # iptables-services for Centos 7 and Centos 8
     yum install -y sudo wget gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel \
         freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel \
-        libsqlite3x-devel curl-devel patch ncurses-devel bzip2 libcap-devel diffutils \
+        libsqlite3x-devel libtool \
+	curl-devel patch ncurses-devel bzip2 libcap-devel diffutils \
         bison icu libicu libicu-devel net-tools psmisc vim vim-enhanced \
         zip unzip telnet tcpdump ipset lsof iptables iptables-services
     [ $? != 0 ] && error_exit "common dependency install err"
-    
+
     # create user for nginx php
     #groupadd -g 1000 www > /dev/null 2>&1
     # -d to set user home_dir=/www
