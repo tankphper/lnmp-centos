@@ -1,6 +1,6 @@
 . ./common.sh
 
-read -p "Enter php version like 7.2.26,7.4.1: " PHP_VER
+read -p "Enter php version like 7.2.26,7.4.1: " PHP_VERSION
 
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
@@ -22,8 +22,8 @@ LIBEVENT_DOWN="https://github.com/libevent/libevent/releases/download/release-2.
 LIBEVENT_SRC="libevent-2.1.8"
 LIBEVENT_LOCK="$LOCK_DIR/libevent.lock"
 # php7 source
-PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VER.tar.gz"
-PHP_SRC="php-$PHP_VER"
+PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VERSION.tar.gz"
+PHP_SRC="php-$PHP_VERSION"
 PHP_DIR="$PHP_SRC"
 PHP_LOCK="$LOCK_DIR/php.lock"
 # common dependency fo php
