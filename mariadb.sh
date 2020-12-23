@@ -72,7 +72,7 @@ function install_mariadb {
     $INSTALL_DIR/mariadb/scripts/mysql_install_db --basedir=$INSTALL_DIR/mariadb --datadir=$INSTALL_DIR/mariadb/data
     # db dir user:group
     chown -hR mysql:mysql $INSTALL_DIR/mariadb/data 
-    # auto start script for centos6 and centos7
+    # auto start script for Centos 6 and Centos 7
     cp -f ./support-files/mysql.server /etc/init.d/mariadbd
     chmod +x /etc/init.d/mariadbd
     # auto start when start system

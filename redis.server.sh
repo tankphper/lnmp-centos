@@ -47,9 +47,9 @@ function install_redis {
         # auto start when start system
         systemctl enable redis.service
     else
-        # only centos6 need daemon
+        # only Centos 6 need daemon
         sed -i 's@^daemonize no@daemonize yes@' $CONF_DIR/redis.conf
-        # auto start script for centos6
+        # auto start script for Centos 6
         auto_start_dir="/etc/rc.d/init.d"
         cp -f utils/redis_init_script $auto_start_dir/redis
         sed -i '1a# chkconfig: 2345 80 90' $auto_start_dir/redis 

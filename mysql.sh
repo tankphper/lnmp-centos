@@ -95,7 +95,7 @@ function install_mysql {
     chown -hR mysql:mysql $INSTALL_DIR/mysql/data 
     # slow log file
     touch /var/log/mysql-slow.log && chown -hR mysql:root /var/log/mysql-slow.log
-    # auto start script for centos6 and centos7
+    # auto start script for Centos 6 and Centos 7
     cp -f ./support-files/mysql.server /etc/init.d/mysqld
     chmod +x /etc/init.d/mysqld
     # auto start when start system

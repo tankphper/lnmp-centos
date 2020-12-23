@@ -71,7 +71,7 @@ function install_nginx {
         # auto start when start system 
         systemctl enable nginxd.service
     else
-        # auto start script for centos6
+        # auto start script for Centos 6
         cp -f $ROOT/nginx.conf/nginx.init.R6 /etc/init.d/nginxd
         chmod +x /etc/init.d/nginxd
         # auto start when start system

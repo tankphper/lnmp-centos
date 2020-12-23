@@ -136,7 +136,7 @@ function install_libiconv {
     [ ! -f $ICONV_SRC$SRC_SUFFIX ] && wget $ICONV_DOWN
     tar -zxvf $ICONV_SRC$SRC_SUFFIX
     cd $ICONV_SRC
-    # for centos7 start
+    # for Centos 7 start
     cd srclib
     sed -i -e '/gets is a security/d' stdio.in.h
     cd ..

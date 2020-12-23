@@ -44,14 +44,14 @@ function install_openresty {
     cp -f $ROOT/nginx.conf/rule.conf $OPENRESTY_DIR/nginx/conf/rewrite/rule.conf
     if [ $VERS -ge 7 ]
     then
-        # auto start script for centos7
+        # auto start script for Centos 7 and Centos 8
         cp -f $ROOT/nginx.conf/nginx.init.R7 /usr/lib/systemd/system/nginxd.service
         systemctl daemon-reload
         systemctl start nginxd.service
         # auto start when start system 
         systemctl enable nginxd.service
     else
-        # auto start script for centos6
+        # auto start script for Centos 6
         cp -f $ROOT/nginx.conf/nginx.init.R6 /etc/init.d/nginxd
         chmod +x /etc/init.d/nginxd
         # auto start when start system
