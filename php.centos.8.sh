@@ -132,8 +132,8 @@ function install_libiconv {
     make install
     [ $? != 0 ] && error_exit "libiconv install err"
     # link to /usr/lib64
-    ln -sf usr/local/libiconv/lib/libiconv.so /usr/lib64/
-    ln -sf usr/local/libiconv/lib/libiconv.so.2 /usr/lib64/
+    ln -sf /usr/local/libiconv/lib/libiconv.so /usr/lib64/
+    ln -sf /usr/local/libiconv/lib/libiconv.so.2 /usr/lib64/
     # refresh active lib
     ldconfig
     cd $SRC_DIR
