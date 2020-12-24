@@ -4,6 +4,11 @@ INSTALL_DIR="/www/server"
 LOCK_DIR="$ROOT/lock"
 SRC_DIR="$ROOT/src"
 SRC_SUFFIX=".tar.gz"
+# dependency of nginx
+#PCRE_DOWN="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.43.tar.gz"
+PCRE_DOWN="https://ftp.pcre.org/pub/pcre/pcre-8.43.tar.gz"
+PCRE_SRC="pcre-8.43"
+PCRE_LOCK="$LOCK_DIR/pcre.lock"
 # openresty source
 OPENRESTY_VERSION="openresty-1.19.3.1"
 OPENRESTY_FILE="$OPENRESTY_VERSION$SRC_SUFFIX"
@@ -61,6 +66,33 @@ function install_openresty {
     echo  
     echo "install openresty complete."
     touch $OPENRESTY_LOCK
+}
+
+# pcre install function
+# nginx rewrite depend pcre
+# pcre_dir=/usr
+function install_pcre {
+    [ -f $PCRE_LOCK ] && return
+
+    echo "install pcre..."
+    cd $SRC_DIR
+    [ ! -f $PCRE_SRC$SRC_SUFFIX ] && wget $PCRE_DOWN
+    tar -zxvf $PCRE_SRC$SRC_SUFFIX
+    cd $PCRE_SRC
+    ./configure --prefix=/usr
+    [ $? != 0 ] && error_exit "pcre configure err"
+    make
+    [ $? != 0 ] && error_exit "pcre make err"
+    make install
+    [ $? != 0 ] && error_exit "pcre install err"
+    # refresh active lib
+    ldconfig
+    cd $SRC_DIR
+    rm -fr $PCRE_SRC
+
+    echo
+    echo "install pcre complete."
+    touch $PCRE_LOCK
 }
 
 # add nginx third module
@@ -123,6 +155,7 @@ function error_exit {
 function start_install {
     [ ! -d $LOCK_DIR ] && mkdir -p $LOCK_DIR
     install_common
+    install_pcre
     install_openresty
 }
 
