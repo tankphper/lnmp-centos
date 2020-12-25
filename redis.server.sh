@@ -18,8 +18,6 @@ REDIS_LOCK="$LOCK_DIR/redis.server.lock"
 function install_redis {
     [ -f $REDIS_LOCK ] && return
 
-    [ $VERS -eq 7 ] && install_devtool
-    
     echo "install redis..."
     cd $SRC_DIR
     [ ! -f $SRC_DIR/$REDIS_SRC$SRC_SUFFIX ] && wget $REDIS_DOWN
@@ -82,6 +80,14 @@ function install_devtool {
 # install common dependency
 function install_common {
     yum install -y sudo wget tcl
+    [ $? != 0 ] && error_exit "common dependence install err"
+    V6 = $(echo $REDIS_SRC | grep -q "redis-6")
+    if [[ $V6 && $VERS -eq 7 && ! -f /etc/scl/prefixes/devtoolset-7 ]]
+    then
+        echo 'Redis 6.x require devtoolset...'
+        echo
+        exit
+    fi
 }
 
 # install error function
