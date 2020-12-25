@@ -49,7 +49,7 @@ function add_swoole {
 function add_protobuf {
     local PROTOBUF_VER=${EXT_VER:-"3.14.0"}
     cd $SRC_DIR
-    [ ! -f protobuf.tar.gz ] && https://pecl.php.net/get/protobuf-$PROTOBUF_VER.tgz -O protobuf.tar.gz
+    [ ! -f protobuf.tar.gz ] && wget https://pecl.php.net/get/protobuf-$PROTOBUF_VER.tgz -O protobuf.tar.gz
     [ ! -f protobuf ] && mkdir protobuf
     tar -zxvf protobuf.tar.gz -C protobuf --strip-components=1
     cd protobuf
