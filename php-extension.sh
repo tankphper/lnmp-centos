@@ -23,9 +23,9 @@ function echo_ini {
 # --enable-async-redis require hiredis library supported
 # --enable-http2 require nghttp2 library supported
 function add_swoole {
-    local SWOOLE_VER=${EXT_VER:-"4.4.14"}
+    local SWOOLE_VER=${EXT_VER:-"4.5.10"}
     cd $SRC_DIR
-    [ ! -f swoole.tar.gz ] && wget https://github.com/swoole/swoole-src/archive/v$SWOOLE_VER.tar.gz -O swoole.tar.gz
+    [ ! -f swoole.tar.gz ] && wget https://pecl.php.net/get/swoole-$SWOOLE_VER.tgz -O swoole.tar.gz
     [ ! -f swoole ] && mkdir swoole
     tar -zxvf swoole.tar.gz -C swoole --strip-components=1
     cd swoole
@@ -49,7 +49,7 @@ function add_swoole {
 function add_protobuf {
     local PROTOBUF_VER=${EXT_VER:-"3.14.0"}
     cd $SRC_DIR
-    [ ! -f protobuf.tar.gz ] && wget https://github.com/protocolbuffers/protobuf/archive/v$PROTOBUF_VER.tar.gz -O protobuf.tar.gz
+    [ ! -f protobuf.tar.gz ] && https://pecl.php.net/get/protobuf-$PROTOBUF_VER.tgz -O protobuf.tar.gz
     [ ! -f protobuf ] && mkdir protobuf
     tar -zxvf protobuf.tar.gz -C protobuf --strip-components=1
     cd protobuf/php/ext/google/protobuf
@@ -68,7 +68,7 @@ function add_protobuf {
 function add_redis {
     local PHPREDIS_VER=${EXT_VER:-"5.3.2"}
     cd $SRC_DIR
-    [ ! -f phpredis.tar.gz ] && wget https://github.com/phpredis/phpredis/archive/$PHPREDIS_VER.tar.gz -O phpredis.tar.gz
+    [ ! -f phpredis.tar.gz ] && wget https://pecl.php.net/get/redis-$PHPREDIS_VER.tgz -O phpredis.tar.gz
     [ ! -f phpredis ] && mkdir phpredis
     tar -zxvf phpredis.tar.gz -C phpredis --strip-components=1
     cd phpredis
