@@ -9,15 +9,15 @@ SRC_SUFFIX=".tar.gz"
 # dependency of php
 ICONV_DOWN="http://ftp.gnu.org/gnu/libiconv/libiconv-1.16.tar.gz"
 ICONV_SRC="libiconv-1.16"
-ICONV_LOCK="$LOCK_DIR/iconv.lock"
+ICONV_LOCK="$LOCK_DIR/php.iconv.lock"
 # php-7.2.x or newer need compile https://pecl.php.net/get/mcrypt-1.0.1.tgz by handle and add mcrypt.so to php.ini
 MCRYPT_DOWN="https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz"
 MCRYPT_SRC="libmcrypt-2.5.8"
-MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
+MCRYPT_LOCK="$LOCK_DIR/php.mcrypt.lock"
 # mbstring depend oniguruma
 ONIGURUMA_DOWN="https://github.com/kkos/oniguruma/archive/v6.9.4.tar.gz"
 ONIGURUMA_SRC="oniguruma-6.9.4"
-ONIGURUMA_LOCK="$LOCK_DIR/oniguruma.lock"
+ONIGURUMA_LOCK="$LOCK_DIR/php.oniguruma.lock"
 # php source
 PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VERSION.tar.gz"
 PHP_SRC="php-$PHP_VERSION"
