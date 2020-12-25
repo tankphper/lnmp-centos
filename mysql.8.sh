@@ -170,7 +170,7 @@ function install_devtool {
     # install devtool repos
     wget -O /etc/yum.repos.d/slc6-devtoolset.repo http://linuxsoft.cern.ch/cern/devtoolset/slc6-devtoolset.repo
     # update repos cache
-    yum clean all && yum makecache fast
+    yum clean all && yum makecache
     yum install -y centos-release-scl devtoolset-7
     [ $? != 0 ] && error_exit "devtoolset dependence install err"
     [ ! -f /usr/bin/scl ] && error_exit "scl install err"
