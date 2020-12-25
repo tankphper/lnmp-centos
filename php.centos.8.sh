@@ -158,6 +158,9 @@ function install_mcrypt {
     
     # refresh active lib
     ldconfig
+    cd libltdl
+    ./configure --enable-ltdl-install && make && make install
+    [ $? != 0 ] && error_exit "mcrypt ltdl install err"
     cd $SRC_DIR
     rm -fr $MCRYPT_SRC
     
