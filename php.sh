@@ -5,12 +5,12 @@ read -p "Enter php version like 7.1.33,7.2.34,7.4.13: " PHP_VERSION
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
-SRC_SUFFIX=".tar.gz
+SRC_SUFFIX=".tar.gz"
 # php source
 PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VERSION.tar.gz"
 PHP_SRC="php-$PHP_VERSION"
 PHP_DIR="$PHP_SRC"
-PHP_LOCK="$LOCK_DIR/php.lock""
+PHP_LOCK="$LOCK_DIR/php.lock"
 # dependency of php
 ICONV_DOWN="http://ftp.gnu.org/gnu/libiconv/libiconv-1.16.tar.gz"
 ICONV_SRC="libiconv-1.16"
