@@ -49,24 +49,23 @@ function install_php {
     cd $PHP_SRC
     make clean > /dev/null 2>&1
     ./configure --prefix=$INSTALL_DIR/$PHP_DIR \
+        --with-fpm-user=www --with-fpm-group=www \
         --with-config-file-path=$INSTALL_DIR/$PHP_DIR/etc \
-        --enable-mysqlnd --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
-        --with-iconv --with-iconv-dir=/usr/local/libiconv \
-        --with-freetype-dir --with-jpeg-dir \
-        --with-png-dir --with-zlib \
-        --with-libxml-dir=/usr --enable-xml \
-        --disable-rpath \
-        --enable-inline-optimization --with-curl \
-        --enable-mbregex --enable-mbstring \
-        --with-mcrypt=/usr --with-gd \
+        --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
+        --with-iconv --with-mhash --with-mcrypt \
+        --with-gd --with-freetype-dir --with-jpeg-dir --with-png-dir \
+        --with-zlib --with-libxml-dir=/usr \
+        --with-curl --with-openssl \
         --with-xmlrpc --with-gettext \
-        --enable-gd-native-ttf --with-openssl \
-        --with-mhash --enable-ftp --enable-intl \
-        --enable-bcmath --enable-exif --enable-soap \
-        --enable-shmop --enable-pcntl \
-        --disable-ipv6 --disable-debug \
+        --enable-fpm --enable-mysqlnd \
+        --enable-inline-optimization \
+        --enable-mbregex --enable-mbstring \
+        --enable-gd-native-ttf \
+        --enable-ftp --enable-intl --enable-xml \
+        --enable-bcmath --enable-exif \
+        --enable-shmop --enable-pcntl --enable-soap \
         --enable-sockets --enable-zip --enable-opcache \
-        --enable-fpm --with-fpm-user=www --with-fpm-group=www
+        --disable-rpath --disable-ipv6 --disable-debug
     [ $? != 0 ] && error_exit "php configure err"
     make ZEND_EXTRA_LIBS='-liconv' -j $CPUS
     [ $? != 0 ] && error_exit "php make err"
