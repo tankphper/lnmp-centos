@@ -17,6 +17,8 @@ REDIS_LOCK="$LOCK_DIR/redis.server.lock"
 # default dir /usr/local/bin
 function install_redis {
     [ -f $REDIS_LOCK ] && return
+
+    [ $VERS -eq 7 ] && install_devtool
     
     echo "install redis..."
     cd $SRC_DIR
@@ -65,6 +67,16 @@ function install_redis {
     echo  
     echo "install redis complete."
     touch $REDIS_LOCK
+}
+
+# Centos 7 install devtoolset
+# GCC 5.3 or newer is required for Redis 6.x
+function install_devtool {
+    yum install -y centos-release-scl
+    [ $? != 0 ] && error_exit "scl install err"
+    yum install -y devtoolset-7
+    [ $? != 0 ] && error_exit "devtool install err"
+    scl enable devtoolset-7 bash
 }
 
 # install common dependency
