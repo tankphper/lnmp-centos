@@ -140,7 +140,7 @@ function install_libiconv {
 }
 
 # mhash install function
-# mhash_dir=/usr
+# mhash_dir=/usr/local/libmhash
 function install_mhash {
     [ -f $MHASH_LOCK ] && return     
     echo "install mhash..."
@@ -148,7 +148,7 @@ function install_mhash {
     cd $SRC_DIR
     [ ! -f $MHASH_SRC$SRC_SUFFIX ] && wget $MHASH_DOWN
     tar -zxvf $MHASH_SRC$SRC_SUFFIX && cd $MHASH_SRC
-    ./configure --prefix=/usr
+    ./configure --prefix=/usr/local/libmhash
     [ $? != 0 ] && error_exit "mhash configure err"
     make
     [ $? != 0 ] && error_exit "mhash make err"
@@ -165,7 +165,7 @@ function install_mhash {
 }
 
 # mcrypt install function
-# mcrypt_dir=/usr
+# mcrypt_dir=/usr/local/libmcrypt
 function install_mcrypt {
     [ -f $MCRYPT_LOCK ] && return 
     echo "install mcrypt..."
@@ -173,7 +173,7 @@ function install_mcrypt {
     cd $SRC_DIR
     [ ! -f $MCRYPT_SRC$SRC_SUFFIX ] && wget $MCRYPT_DOWN
     tar -zxvf $MCRYPT_SRC$SRC_SUFFIX && cd $MCRYPT_SRC
-    ./configure --prefix=/usr
+    ./configure --prefix=/usr/local/libmcrypt
     [ $? != 0 ] && error_exit "mcrypt configure err"
     make
     [ $? != 0 ] && error_exit "mcrypt make err"
