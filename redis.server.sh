@@ -74,6 +74,8 @@ function install_devtool {
     [ $? != 0 ] && error_exit "scl install err"
     yum install -y devtoolset-7
     [ $? != 0 ] && error_exit "devtool install err"
+    echo "Devtoolset-7 install completed. You can install Redis Server now."
+    echo ""
     scl enable devtoolset-7 bash
 }
 
