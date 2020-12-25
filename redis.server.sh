@@ -81,8 +81,8 @@ function install_devtool {
 function install_common {
     yum install -y sudo wget tcl
     [ $? != 0 ] && error_exit "common dependence install err"
-    V6 = $(echo $REDIS_SRC | grep -q "redis-6")
-    if [[ $V6 && $VERS -eq 7 && ! -f /etc/scl/prefixes/devtoolset-7 ]]
+    $(echo $REDIS_SRC | grep -q "redis-6") && V6=1 || V6=0
+    if [[ $V6 -eq 1 && $VERS -eq 7 && ! -f /etc/scl/prefixes/devtoolset-7 ]]
     then
         echo 'Redis 6.x require devtoolset...'
         echo
