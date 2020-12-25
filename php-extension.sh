@@ -52,7 +52,7 @@ function add_protobuf {
     [ ! -f protobuf.tar.gz ] && https://pecl.php.net/get/protobuf-$PROTOBUF_VER.tgz -O protobuf.tar.gz
     [ ! -f protobuf ] && mkdir protobuf
     tar -zxvf protobuf.tar.gz -C protobuf --strip-components=1
-    cd protobuf/php/ext/google/protobuf
+    cd protobuf
     phpize
     ./configure --with-php-config=/www/server/php/bin/php-config
     [ $? != 0 ] && error_exit "protobuf configure err"
