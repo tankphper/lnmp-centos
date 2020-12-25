@@ -74,6 +74,7 @@ function install_devtool {
     [ $? != 0 ] && error_exit "scl install err"
     yum install -y devtoolset-7
     [ $? != 0 ] && error_exit "devtool install err"
+    echo ""
     echo "Devtoolset-7 install completed. You can install Redis Server now."
     echo ""
     scl enable devtoolset-7 bash
@@ -86,7 +87,7 @@ function install_common {
     $(echo $REDIS_SRC | grep -q "redis-6") && V6=1 || V6=0
     if [[ $V6 -eq 1 && $VERS -eq 7 && ! -f /etc/scl/prefixes/devtoolset-7 ]]
     then
-        read -p "Redis 6.x require devtoolset, do you want to install devtoolset ? (Y/N)" CONFIRM
+        read -p "Redis $REDIS_VERSION require devtoolset on Centos 7, do you want to install? (Y/N) " CONFIRM
         if [[ $CONFIRM == "Y" ]]
         then
             install_devtool
