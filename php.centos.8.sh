@@ -194,7 +194,6 @@ function install_oniguruma {
 
 # install common dependency
 # ifconfig command depend net-tools
-# remove libmhash-devel libmcrypt-devel
 # php user:group is www:www
 function install_common {
     [ -f $COMMON_LOCK ] && return

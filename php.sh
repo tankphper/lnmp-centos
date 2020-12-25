@@ -5,41 +5,22 @@ read -p "Enter php version like 7.2.26,7.4.13: " PHP_VERSION
 INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
-SRC_SUFFIX=".tar.gz"
+SRC_SUFFIX=".tar.gz
+# php source
+PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VERSION.tar.gz"
+PHP_SRC="php-$PHP_VERSION"
+PHP_DIR="$PHP_SRC"
+PHP_LOCK="$LOCK_DIR/php.lock""
 # dependency of php
 ICONV_DOWN="http://ftp.gnu.org/gnu/libiconv/libiconv-1.16.tar.gz"
 ICONV_SRC="libiconv-1.16"
-ICONV_LOCK="$LOCK_DIR/iconv.lock"
-MHASH_DOWN="https://downloads.sourceforge.net/project/mhash/mhash/0.9.9.9/mhash-0.9.9.9.tar.gz"
-MHASH_SRC="mhash-0.9.9.9"
-MHASH_LOCK="$LOCK_DIR/mhash.lock"
+ICONV_LOCK="$LOCK_DIR/php.iconv.lock"
 # php-7.2.x need compile https://pecl.php.net/get/mcrypt-1.0.1.tgz by handle and add mcrypt.so to php.ini
 MCRYPT_DOWN="https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz"
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
-# libevent not support php-7.x
-LIBEVENT_DOWN="https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz"
-LIBEVENT_SRC="libevent-2.1.8"
-LIBEVENT_LOCK="$LOCK_DIR/libevent.lock"
-# php7 source
-PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VERSION.tar.gz"
-PHP_SRC="php-$PHP_VERSION"
-PHP_DIR="$PHP_SRC"
-PHP_LOCK="$LOCK_DIR/php.lock"
-# common dependency fo php
+# common dependency for php
 COMMON_LOCK="$LOCK_DIR/php.common.lock"
-# extensions for php
-SWOOLE_DOWN="https://github.com/swoole/swoole-src/archive/v1.9.16.tar.gz"
-SWOOLE_DIR="swoole-src-1.9.16"
-SWOOLE_LOCK="$LOCK_DIR/swoole.lock"
-# above 2.2.8 only for php7
-REDIS_DOWN="https://github.com/phpredis/phpredis/archive/3.1.3.tar.gz"
-REDIS_DIR="phpredis-3.1.3"
-REDIS_LOCK="$LOCK_DIR/phpredis.lock"
-# libevent not support php-7.x
-LIBEVENT_EXT_DOWN="http://pecl.php.net/get/libevent-0.1.0.tgz"
-LIBEVENT_EXT_DIR="libevent-0.1.0"
-LIBEVENT_EXT_LOCK="$LOCK_DIR/libevent.ext.lock"
 
 # php-7.x install function
 # for nginx:
@@ -48,7 +29,6 @@ LIBEVENT_EXT_LOCK="$LOCK_DIR/libevent.ext.lock"
 function install_php {
     
     [ ! -f /usr/lib/libiconv.so ] && install_libiconv
-    [ ! -f /usr/lib/libmhash.so ] && install_mhash
     [ ! -f /usr/lib/libmcrypt.so ] && install_mcrypt
     
     [ -f $PHP_LOCK ] && (echo 'Install locked.') && return    
@@ -72,7 +52,7 @@ function install_php {
         --with-mcrypt=/usr --with-gd \
         --with-xmlrpc --with-gettext \
         --enable-gd-native-ttf --with-openssl \
-        --with-mhash --enable-ftp --enable-intl \
+        --enable-ftp --enable-intl \
         --enable-bcmath --enable-exif --enable-soap \
         --enable-shmop --enable-pcntl \
         --disable-ipv6 --disable-debug \
@@ -96,7 +76,7 @@ function install_php {
     # php version
     php -v | grep -q "PHP 7" && V7=1 || V7=0
     php -v | grep -q "PHP 8" && V8=1 || V8=0
-    if [[ $V7 == 1 || $V8 == 1 ]]
+    if [[ $V7 -eq 1 || $V8 -eq 1 ]]
     then
         cp -f $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf.default $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf
         cp -f $INSTALL_DIR/$PHP_DIR/etc/php-fpm.d/www.conf.default $INSTALL_DIR/$PHP_DIR/etc/php-fpm.d/www.conf
@@ -148,6 +128,7 @@ function install_libiconv {
     [ $? != 0 ] && error_exit "libiconv make err"
     make install
     [ $? != 0 ] && error_exit "libiconv install err"
+    
     # refresh active lib
     ldconfig
     cd $SRC_DIR
@@ -156,32 +137,6 @@ function install_libiconv {
     echo 
     echo "install libiconv complete."
     touch $ICONV_LOCK
-}
-
-# mhash install function
-# mhash_dir=/usr
-function install_mhash {
-    [ -f $MHASH_LOCK ] && return     
-    echo "install mhash..."
-
-    cd $SRC_DIR
-    [ ! -f $MHASH_SRC$SRC_SUFFIX ] && wget $MHASH_DOWN
-    tar -zxvf $MHASH_SRC$SRC_SUFFIX
-    cd $MHASH_SRC
-    ./configure --prefix=/usr
-    [ $? != 0 ] && error_exit "mhash configure err"
-    make
-    [ $? != 0 ] && error_exit "mhash make err"
-    make install
-    [ $? != 0 ] && error_exit "mhash install err"
-    # refresh active lib
-    ldconfig
-    cd $SRC_DIR
-    rm -fr $MHASH_SRC
-    
-    echo 
-    echo "install mhash complete."
-    touch $MHAHS_LOCK
 }
 
 # mcrypt install function
@@ -200,6 +155,7 @@ function install_mcrypt {
     [ $? != 0 ] && error_exit "mcrypt make err"
     make install
     [ $? != 0 ] && error_exit "mcrypt install err"
+    
     # refresh active lib
     ldconfig
     cd libltdl
@@ -213,34 +169,8 @@ function install_mcrypt {
     touch $MCRYPT_LOCK
 }
 
-# libevent install function
-# libevent_dir=/usr/local/libevent-2.x.x
-function install_libevent {
-    [ -f $LIBEVENT_LOCK ] && return
-    echo "install libevent..."
-
-    wget -c $LIBEVENT_DOWN -P /usr/local/src
-    cd /usr/local/src
-    tar -zxvf "$LIBEVENT_SRC-stable.tar.gz" && cd "$LIBEVENT_SRC-stable"
-    ./configure --prefix=/usr/local/$LIBEVENT_SRC
-    [ $? != 0 ] && error_exit "libevent configure err"
-    make
-    [ $? != 0 ] && error_exit "libevent make err"
-    make install
-    [ $? != 0 ] && error_exit "libevent install err"
-    # refresh active lib
-    ldconfig
-    cd $SRC_DIR
-    rm -fr $LIBEVENT_SRC
-
-    echo 
-    echo "install libevent complete."
-    touch $LIBEVENT_LOCK
-}
-
 # install common dependency
 # ifconfig command depend net-tools
-# remove libmhash-devel libmcrypt-devel
 # php user:group is www:www
 function install_common {
     [ -f $COMMON_LOCK ] && return
