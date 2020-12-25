@@ -17,10 +17,6 @@ MHASH_LOCK="$LOCK_DIR/mhash.lock"
 MCRYPT_DOWN="https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz"
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
-# libevent not support php-7.x
-LIBEVENT_DOWN="https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz"
-LIBEVENT_SRC="libevent-2.1.8"
-LIBEVENT_LOCK="$LOCK_DIR/libevent.lock"
 # php source
 PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VERSION.tar.gz"
 PHP_SRC="php-$PHP_VERSION"
@@ -116,7 +112,7 @@ function install_php {
 }
 
 # libiconv install function
-# iconv_dir=/usr
+# iconv_dir=/usr/local/libiconv
 function install_libiconv {
     [ -f $ICONV_LOCK ] && return     
     echo "install libiconv..."
@@ -194,31 +190,6 @@ function install_mcrypt {
     echo 
     echo "install mcrypt complete."
     touch $MCRYPT_LOCK
-}
-
-# libevent install function
-# libevent_dir=/usr/local/libevent-2.x.x
-function install_libevent {
-    [ -f $LIBEVENT_LOCK ] && return
-    echo "install libevent..."
-    
-    cd $SRC_DIR
-    [ ! -f "$LIBEVENT_SRC-stable.tar.gz" ] && wget -c $LIBEVENT_DOWN
-    tar -zxvf "$LIBEVENT_SRC-stable.tar.gz" && cd "$LIBEVENT_SRC-stable"
-    ./configure --prefix=/usr/local/$LIBEVENT_SRC
-    [ $? != 0 ] && error_exit "libevent configure err"
-    make
-    [ $? != 0 ] && error_exit "libevent make err"
-    make install
-    [ $? != 0 ] && error_exit "libevent install err"
-    # refresh active lib
-    ldconfig
-    cd $SRC_DIR
-    rm -fr "$LIBEVENT_SRC-stable"
-
-    echo 
-    echo "install libevent complete."
-    touch $LIBEVENT_LOCK
 }
 
 # mbstring depend oniguruma
