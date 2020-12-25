@@ -1,13 +1,15 @@
 . ./common.sh
 
+read -p "Enter redis version like 5.0.9: " REDIS_VERSION
+
 INSTALL_DIR="/www/server"
 CONF_DIR="$INSTALL_DIR/etc"
 SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
 SRC_SUFFIX=".tar.gz"
 # redis server source
-REDIS_DOWN="http://download.redis.io/releases/redis-5.0.7.tar.gz"
-REDIS_SRC="redis-5.0.7"
+REDIS_DOWN="http://download.redis.io/releases/redis-$REDIS_VERSION.tar.gz"
+REDIS_SRC="redis-$REDIS_VERSION"
 REDIS_DIR="$REDIS_SRC"
 REDIS_LOCK="$LOCK_DIR/redis.server.lock"
 

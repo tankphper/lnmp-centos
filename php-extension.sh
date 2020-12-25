@@ -15,6 +15,7 @@ echo "PHP_API_VER:"$PHP_API_VER
 echo "PHP_EXT_DIR:"$PHP_EXT_DIR
 echo "EXT_VER:"$EXT_VER
 
+# add extension file to php.ini
 function echo_ini {
     echo "extension=$PHP_EXT_DIR/$1.so" >> $PHP_PREFIX/etc/php.ini
 }
@@ -44,8 +45,9 @@ function add_swoole {
     echo_ini swoole
 }
 
+# some cocos game use protobuf api
 function add_protobuf {
-    local PROTOBUF_VER=${EXT_VER:-"3.6.1"}
+    local PROTOBUF_VER=${EXT_VER:-"3.14.0"}
     cd $SRC_DIR
     [ ! -f protobuf.tar.gz ] && wget https://github.com/protocolbuffers/protobuf/archive/v$PROTOBUF_VER.tar.gz -O protobuf.tar.gz
     [ ! -f protobuf ] && mkdir protobuf
@@ -61,8 +63,10 @@ function add_protobuf {
     echo_ini protobuf
 }
 
+# phpredis-4.3.0 is the latest release with PHP 5 suport
+# phpredis-5.x or newer drop PHP 5 support
 function add_redis {
-    local PHPREDIS_VER=${EXT_VER:-"4.3.0"}
+    local PHPREDIS_VER=${EXT_VER:-"5.3.2"}
     cd $SRC_DIR
     [ ! -f phpredis.tar.gz ] && wget https://github.com/phpredis/phpredis/archive/$PHPREDIS_VER.tar.gz -O phpredis.tar.gz
     [ ! -f phpredis ] && mkdir phpredis
@@ -78,10 +82,10 @@ function add_redis {
     echo_ini redis
 }
 
-# php-7.2.x not have mcrypt
+# php-7.2.x removed mcrypt
 # php --ri mcrypt will see version 2.5.8
 function add_mcrypt {
-    local MCRYPT_VER=${EXT_VER:-"1.0.1"}
+    local MCRYPT_VER=${EXT_VER:-"1.0.4"}
     cd $SRC_DIR
     [ ! -f phpmcrypt.tar.gz ] && wget https://pecl.php.net/get/mcrypt-$MCRYPT_VER.tgz -O phpmcrypt.tar.gz
     [ ! -d phpmcrypt ] && mkdir phpmcrypt
