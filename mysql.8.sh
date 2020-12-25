@@ -26,7 +26,6 @@ COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 # mysql install function
 function install_mysql {
     
-    [ ! -f /usr/bin/scl ] && install_devtool
     [ ! -f /usr/local/bin/cmake ] && install_cmake 
     #[ ! -d /usr/local/src/$BOOST_SRC ] && install_boost
 
@@ -171,6 +170,9 @@ function install_devtool {
     [ $? != 0 ] && error_exit "scl install err"
     yum install -y devtoolset-7
     [ $? != 0 ] && error_exit "devtool install err"
+    echo ""
+    echo "Devtoolset-7 install completed. You can install Mysql Server now."
+    echo ""
     scl enable devtoolset-7 bash
 }
 
@@ -183,6 +185,18 @@ function install_common {
     yum install -y sudo git wget gcc gcc-c++ ncurses ncurses-devel bison \
         tcpdump iptables iptables-services
     [ $? != 0 ] && error_exit "common dependence install err"
+
+    $(echo $MYSQL_SRC | grep -q "mysql-8") && V8=1 || V8=0
+    if [[ $V8 -eq 1 && $VERS -eq 7 && ! -f /etc/scl/prefixes/devtoolset-7 ]]
+    then
+        read -p "Mysql $MYSQL_VERSION require devtoolset on Centos 7, do you want to install? (Y/N) " CONFIRM
+        if [[ $CONFIRM == "Y" ]]
+        then
+            install_devtool
+        else
+            exit
+        fi
+    fi
     
     # create user for mysql
     #groupadd -g 27 mysql > /dev/null 2>&1
