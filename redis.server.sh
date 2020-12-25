@@ -84,9 +84,13 @@ function install_common {
     $(echo $REDIS_SRC | grep -q "redis-6") && V6=1 || V6=0
     if [[ $V6 -eq 1 && $VERS -eq 7 && ! -f /etc/scl/prefixes/devtoolset-7 ]]
     then
-        echo 'Redis 6.x require devtoolset...'
-        echo
-        exit
+        read -p "Redis 6.x require devtoolset, do you want to install devtoolset ? (Y/N)" CONFIRM
+        if [ $CONFIRM -eq "Y" ]
+        then
+            install_devtool
+        else
+            exit
+        fi
     fi
 }
 
