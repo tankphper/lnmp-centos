@@ -10,13 +10,14 @@ SRC_SUFFIX=".tar.gz"
 ICONV_DOWN="http://ftp.gnu.org/gnu/libiconv/libiconv-1.16.tar.gz"
 ICONV_SRC="libiconv-1.16"
 ICONV_LOCK="$LOCK_DIR/iconv.lock"
-MHASH_DOWN="https://downloads.sourceforge.net/project/mhash/mhash/0.9.9.9/mhash-0.9.9.9.tar.gz"
-MHASH_SRC="mhash-0.9.9.9"
-MHASH_LOCK="$LOCK_DIR/mhash.lock"
 # php-7.2.x or newer need compile https://pecl.php.net/get/mcrypt-1.0.1.tgz by handle and add mcrypt.so to php.ini
 MCRYPT_DOWN="https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz"
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
+# mbstring depend oniguruma
+ONIGURUMA_DOWN="https://github.com/kkos/oniguruma/archive/v6.9.4.tar.gz"
+ONIGURUMA_SRC="oniguruma-6.9.4"
+ONIGURUMA_LOCK="$LOCK_DIR/oniguruma.lock"
 # php source
 PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VERSION.tar.gz"
 PHP_SRC="php-$PHP_VERSION"
@@ -32,7 +33,6 @@ COMMON_LOCK="$LOCK_DIR/php.common.lock"
 function install_php {
     
     [ ! -f /usr/lib64/libiconv.so ] && install_libiconv
-    [ ! -f /usr/lib64/libmhash.so ] && install_mhash
     [ ! -f /usr/lib64/libmcrypt.so ] && install_mcrypt
     [ ! -f /usr/include/oniguruma.h ] && install_oniguruma
     
@@ -48,7 +48,7 @@ function install_php {
         --with-fpm-user=www --with-fpm-group=www \
         --with-config-file-path=$INSTALL_DIR/$PHP_DIR/etc \
         --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
-        --with-iconv --with-mhash --with-mcrypt \
+        --with-iconv --with-mcrypt=/usr \
         --with-gd --with-freetype-dir --with-jpeg-dir --with-png-dir \
         --with-zlib --with-libxml-dir=/usr \
         --with-curl --with-openssl \
@@ -129,6 +129,7 @@ function install_libiconv {
     # link to /usr/lib64
     ln -sf /usr/local/libiconv/lib/libiconv.so /usr/lib64/
     ln -sf /usr/local/libiconv/lib/libiconv.so.2 /usr/lib64/
+    
     # refresh active lib
     ldconfig
     cd $SRC_DIR
@@ -139,33 +140,8 @@ function install_libiconv {
     touch $ICONV_LOCK
 }
 
-# mhash install function
-# mhash_dir=/usr/local/libmhash
-function install_mhash {
-    [ -f $MHASH_LOCK ] && return     
-    echo "install mhash..."
-
-    cd $SRC_DIR
-    [ ! -f $MHASH_SRC$SRC_SUFFIX ] && wget $MHASH_DOWN
-    tar -zxvf $MHASH_SRC$SRC_SUFFIX && cd $MHASH_SRC
-    ./configure --prefix=/usr/local/libmhash
-    [ $? != 0 ] && error_exit "mhash configure err"
-    make
-    [ $? != 0 ] && error_exit "mhash make err"
-    make install
-    [ $? != 0 ] && error_exit "mhash install err"
-    # refresh active lib
-    ldconfig
-    cd $SRC_DIR
-    rm -fr $MHASH_SRC
-    
-    echo 
-    echo "install mhash complete."
-    touch $MHAHS_LOCK
-}
-
 # mcrypt install function
-# mcrypt_dir=/usr/local/libmcrypt
+# mcrypt_dir=/usr
 function install_mcrypt {
     [ -f $MCRYPT_LOCK ] && return 
     echo "install mcrypt..."
@@ -173,17 +149,15 @@ function install_mcrypt {
     cd $SRC_DIR
     [ ! -f $MCRYPT_SRC$SRC_SUFFIX ] && wget $MCRYPT_DOWN
     tar -zxvf $MCRYPT_SRC$SRC_SUFFIX && cd $MCRYPT_SRC
-    ./configure --prefix=/usr/local/libmcrypt
+    ./configure --prefix=/usr
     [ $? != 0 ] && error_exit "mcrypt configure err"
     make
     [ $? != 0 ] && error_exit "mcrypt make err"
     make install
     [ $? != 0 ] && error_exit "mcrypt install err"
+    
     # refresh active lib
     ldconfig
-    cd libltdl
-    ./configure --enable-ltdl-install && make && make install
-    [ $? != 0 ] && error_exit "mcrypt ltdl install err"
     cd $SRC_DIR
     rm -fr $MCRYPT_SRC
     
@@ -195,18 +169,27 @@ function install_mcrypt {
 # mbstring depend oniguruma
 # Centos 8 install oniguruma
 function install_oniguruma {
+    [ -f $ONIGURUMA_LOCK ] && return
+    echo "install oniguruma..."
+
     cd $SRC_DIR
-    wget https://github.com/kkos/oniguruma/archive/v6.9.4.tar.gz -O oniguruma-6.9.4.tar.gz
-    tar -zxvf oniguruma-6.9.4.tar.gz && cd oniguruma-6.9.4
+    wget $ONIGURUMA_DOWN -O $ONIGURUMA_SRC.tar.gz
+    tar -zxvf $ONIGURUMA_SRC.tar.gz && cd $ONIGURUMA_SRC
     ./autogen.sh && ./configure --prefix=/usr
     [ $? != 0 ] && error_exit "oniguruma configure err"
     make
     [ $? != 0 ] && error_exit "oniguruma make err"
     make install
     [ $? != 0 ] && error_exit "oniguruma install err"
-    
+   
+    # refresh active lib
+    ldconfig 
     cd $SRC_DIR
-    rm -fr oniguruma-6.9.4
+    rm -fr $ONIGURUMA_SRC
+
+    echo
+    echo "install oniguruma complete."
+    touch $ONIGURUMA_LOCK
 }
 
 # install common dependency
