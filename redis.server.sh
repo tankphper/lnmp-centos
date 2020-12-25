@@ -85,7 +85,7 @@ function install_common {
     if [[ $V6 -eq 1 && $VERS -eq 7 && ! -f /etc/scl/prefixes/devtoolset-7 ]]
     then
         read -p "Redis 6.x require devtoolset, do you want to install devtoolset ? (Y/N)" CONFIRM
-        if [ $CONFIRM -eq "Y" ]
+        if [[ $CONFIRM == "Y" ]]
         then
             install_devtool
         else
