@@ -1,6 +1,6 @@
 . ./common.sh
 
-read -p "Enter redis version like 5.0.9: " REDIS_VERSION
+read -p "Enter redis version like 5.0.9,6.0.9: " REDIS_VERSION
 
 INSTALL_DIR="/www/server"
 CONF_DIR="$INSTALL_DIR/etc"
