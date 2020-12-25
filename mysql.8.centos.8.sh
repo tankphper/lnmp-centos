@@ -13,18 +13,18 @@ MYSQL_LOCK="$LOCK_DIR/mysql.lock"
 CMAKE_DOWN="https://cmake.org/files/v3.19/cmake-3.19.2.tar.gz"
 CMAKE_SRC="cmake-3.19.2"
 CMAKE_DIR="$CMAKE_SRC"
-CMAKE_LOCK="$LOCK_DIR/cmake.lock"
+CMAKE_LOCK="$LOCK_DIR/mysql.cmake.lock"
 # boost 1.59.0 for mysql 5.7.x, 1.72.0 for mysql 8.0.x
 #BOOST_DOWN="https://dl.bintray.com/boostorg/release/1.59.0/source/boost_1_59_0.tar.gz"
 BOOST_DOWN="https://sourceforge.net/projects/boost/files/boost/1.72.0/boost_1_72_0.tar.gz"
 BOOST_SRC="boost_1_72_0"
 BOOST_DIR="$BOOST_SRC"
-BOOST_LOCK="$LOCK_DIR/boost.lock"
+BOOST_LOCK="$LOCK_DIR/mysql.boost.lock"
 # mysql-8.0.x in Centos 8 require rpcgen
 RPCGEN_DOWN="https://github.com/thkukuk/rpcsvc-proto/releases/download/v1.4.2/rpcsvc-proto-1.4.2.tar.xz"
 RPCGEN_SRC="rpcsvc-proto-1.4.2"
-RPCGEN_LOCK="$LOCK_DIR/rpcgen.lock"
-# common dRPCGEN_SRCependency fo mysql
+RPCGEN_LOCK="$LOCK_DIR/mysql.rpcgen.lock"
+# common dependency for mysql
 COMMON_LOCK="$LOCK_DIR/mysql.common.lock"
 
 # mysql install function

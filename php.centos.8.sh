@@ -6,6 +6,11 @@ INSTALL_DIR="/www/server"
 SRC_DIR="$ROOT/src"
 LOCK_DIR="$ROOT/lock"
 SRC_SUFFIX=".tar.gz"
+# php source
+PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VERSION.tar.gz"
+PHP_SRC="php-$PHP_VERSION"
+PHP_DIR="$PHP_SRC"
+PHP_LOCK="$LOCK_DIR/php.lock"
 # dependency of php
 ICONV_DOWN="http://ftp.gnu.org/gnu/libiconv/libiconv-1.16.tar.gz"
 ICONV_SRC="libiconv-1.16"
@@ -18,12 +23,7 @@ MCRYPT_LOCK="$LOCK_DIR/php.mcrypt.lock"
 ONIGURUMA_DOWN="https://github.com/kkos/oniguruma/archive/v6.9.4.tar.gz"
 ONIGURUMA_SRC="oniguruma-6.9.4"
 ONIGURUMA_LOCK="$LOCK_DIR/php.oniguruma.lock"
-# php source
-PHP_DOWN="http://hk1.php.net/distributions/php-$PHP_VERSION.tar.gz"
-PHP_SRC="php-$PHP_VERSION"
-PHP_DIR="$PHP_SRC"
-PHP_LOCK="$LOCK_DIR/php.lock"
-# common dependency fo php
+# common dependency for php
 COMMON_LOCK="$LOCK_DIR/php.common.lock"
 
 # php-7.x install function
