@@ -1,6 +1,10 @@
 . ./common.sh
 
 function install_tool {
+     # install bash-completion
+     yum install -y bash-completion
+     source /etc/profile.d/bash_completion.sh
+     echo 'source /etc/profile.d/bash_completion.sh' >> ~/.bashrc
      # install composer
      [ ! -L /usr/local/bin/php ] && (echo "Please install php first..." && exit)
      curl -sS https://getcomposer.org/installer | php
