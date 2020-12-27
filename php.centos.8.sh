@@ -215,7 +215,7 @@ function install_common {
     # iptables-services for Centos 7 and Centos 8
     yum install -y sudo wget gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel \
         freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel \
-        libsqlite3x-devel libtool libzip \
+        libsqlite3x-devel libtool libzip-devel \
 	curl-devel patch ncurses-devel bzip2 libcap-devel diffutils \
         bison icu libicu libicu-devel net-tools psmisc vim vim-enhanced \
         zip unzip telnet tcpdump ipset lsof iptables iptables-services
