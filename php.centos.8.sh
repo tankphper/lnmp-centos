@@ -26,10 +26,14 @@ ONIGURUMA_LOCK="$LOCK_DIR/php.oniguruma.lock"
 # common dependency for php
 COMMON_LOCK="$LOCK_DIR/php.common.lock"
 
-# php-7.x install function
-# for nginx:
-# --enable-fpm --with-fpm-user=www --with-fpm-group=www
-# no zend guard loader for php-7.x
+# php-7.x and php-8.x install function
+# nginx: --enable-fpm --with-fpm-user=www --with-fpm-group=www
+# as of php-7.4.0, --with-gd becomes --enable-gd (whether to enable the extension at all)
+# as of php-7.4.0, use --with-jpeg instead --with-jpeg-dir=DIR
+# as of php-7.4.0, --with-png-dir and --with-zlib-dir have been removed, libpng and zlib are required
+# as of php-7.4.0 use --with-freetype instead --with-freetype-dir=DIR, which relies on pkg-config
+# as of php-7.2.0 --enable-gd-native-ttf has no effect and has been removed
+# as of php-7.4.0 use --with-zip instead --enable-zip
 function install_php {
     
     [ ! -f /usr/lib64/libiconv.so ] && install_libiconv
@@ -44,24 +48,32 @@ function install_php {
     tar -zxvf $PHP_SRC$SRC_SUFFIX
     cd $PHP_SRC
     make clean > /dev/null 2>&1
-    ./configure --prefix=$INSTALL_DIR/$PHP_DIR \
-        --with-fpm-user=www --with-fpm-group=www \
+    if [ $PHP_VERSION -lt "7.4.0" ]
+    then
+        ./configure --prefix=$INSTALL_DIR/$PHP_DIR \
         --with-config-file-path=$INSTALL_DIR/$PHP_DIR/etc \
-        --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
+        --enable-fpm --with-fpm-user=www --with-fpm-group=www \
+        --enable-mysqlnd --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
         --with-iconv --with-mcrypt=/usr \
-        --with-gd --with-freetype-dir --with-jpeg-dir --with-png-dir \
-        --with-zlib --with-libxml-dir=/usr \
-        --with-curl --with-openssl \
-        --with-xmlrpc --with-gettext \
-        --enable-fpm --enable-mysqlnd \
+        --with-gd --with-freetype-dir --with-jpeg-dir --with-png-dir --enable-gd-native-ttf \
+        --with-zlib --with-libxml-dir=/usr --with-curl --with-openssl --with-xmlrpc --with-gettext \
         --enable-inline-optimization \
-        --enable-mbregex --enable-mbstring \
-        --enable-gd-native-ttf \
-        --enable-ftp --enable-intl --enable-xml \
-        --enable-bcmath --enable-exif \
-        --enable-shmop --enable-pcntl --enable-soap \
-        --enable-sockets --enable-zip --enable-opcache \
+        --enable-mbregex --enable-mbstring --enable-ftp --enable-intl --enable-xml --enable-bcmath \
+        --enable-exif --enable-shmop --enable-pcntl --enable-soap --enable-sockets --enable-zip --enable-opcache \
         --disable-rpath --disable-ipv6 --disable-debug
+    else
+        ./configure --prefix=$INSTALL_DIR/$PHP_DIR \
+        --with-config-file-path=$INSTALL_DIR/$PHP_DIR/etc \
+        --enable-fpm --with-fpm-user=www --with-fpm-group=www \
+        --enable-mysqlnd --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
+        --with-iconv --with-mcrypt=/usr \
+        --enable-gd --with-freetype --with-jpeg --with-zip \
+        --with-zlib --with-libxml-dir=/usr --with-curl --with-openssl --with-xmlrpc --with-gettext \
+        --enable-inline-optimization \
+        --enable-mbregex --enable-mbstring --enable-ftp --enable-intl --enable-xml --enable-bcmath \
+        --enable-exif --enable-shmop --enable-pcntl --enable-soap --enable-sockets --enable-opcache \
+        --disable-rpath --disable-ipv6 --disable-debug
+    fi
     [ $? != 0 ] && error_exit "php configure err"
     make ZEND_EXTRA_LIBS='-liconv' -j $CPUS
     [ $? != 0 ] && error_exit "php make err"
