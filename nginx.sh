@@ -61,8 +61,7 @@ function install_nginx {
     # cp default conf and tp rewrite rule 
     cp -f $ROOT/nginx.conf/nginx.conf $INSTALL_DIR/nginx/conf/nginx.conf
     cp -f $ROOT/nginx.conf/rule.conf $INSTALL_DIR/nginx/conf/rewrite/rule.conf
-    if [ $VERS -gt 7 ]
-    then
+    if [ $VERS -gt 7 ]; then
         # auto start script for Centos 7 and Centos 8
         cp -f $ROOT/nginx.conf/nginx.init.R7 /usr/lib/systemd/system/nginxd.service
         systemctl daemon-reload

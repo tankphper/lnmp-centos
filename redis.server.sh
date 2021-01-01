@@ -38,8 +38,7 @@ function install_redis {
     sed -i 's@^dbfilename dump.rdb@dbfilename redis.rdb@' $CONF_DIR/redis.conf
     mkdir -p /www/data
     sed -i 's@^dir ./@dir /www/data/@' $CONF_DIR/redis.conf
-    if [ $VERS -ge 7 ]
-    then
+    if [ $VERS -ge 7 ]; then
         # systemctl require redis run non-daemonised
         sed -i 's@^daemonize yes@daemonize no@' $CONF_DIR/redis.conf
         # auto start script for Centos 7 and Centos 8
@@ -85,11 +84,9 @@ function install_common {
     yum install -y sudo wget tcl
     [ $? != 0 ] && error_exit "common dependence install err"
     $(echo $REDIS_SRC | grep -q "redis-6") && V6=1 || V6=0
-    if [[ $V6 -eq 1 && $VERS -eq 7 && ! -f /etc/scl/prefixes/devtoolset-7 ]]
-    then
+    if [[ $V6 -eq 1 && $VERS -eq 7 && ! -f /etc/scl/prefixes/devtoolset-7 ]]; then
         read -p "Redis $REDIS_VERSION require devtoolset on Centos 7, do you want to install? (Y/N) " CONFIRM
-        if [[ $CONFIRM == "Y" ]]
-        then
+        if [[ $CONFIRM == "Y" ]]; then
             install_devtool
         else
             exit

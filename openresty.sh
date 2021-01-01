@@ -45,8 +45,7 @@ function install_openresty {
     # cp default conf and tp rewrite rule 
     cp -f $ROOT/nginx.conf/nginx.conf $OPENRESTY_DIR/nginx/conf/nginx.conf
     cp -f $ROOT/nginx.conf/rule.conf $OPENRESTY_DIR/nginx/conf/rewrite/rule.conf
-    if [ $VERS -ge 7 ]
-    then
+    if [ $VERS -ge 7 ]; then
         # auto start script for Centos 7 and Centos 8
         cp -f $ROOT/nginx.conf/nginx.init.R7 /usr/lib/systemd/system/nginxd.service
         systemctl daemon-reload
@@ -159,8 +158,7 @@ function start_install {
     install_openresty
 }
 
-if [[ $1 = "module" ]]
-then
+if [[ $1 = "module" ]]; then
     add_module
 else
     start_install

@@ -76,8 +76,7 @@ function install_php {
     # php version
     php -v | grep -q "PHP 7" && V7=1 || V7=0
     php -v | grep -q "PHP 8" && V8=1 || V8=0
-    if [[ $V7 -eq 1 || $V8 -eq 1 ]]
-    then
+    if [[ $V7 -eq 1 || $V8 -eq 1 ]]; then
         cp -f $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf.default $INSTALL_DIR/$PHP_DIR/etc/php-fpm.conf
         cp -f $INSTALL_DIR/$PHP_DIR/etc/php-fpm.d/www.conf.default $INSTALL_DIR/$PHP_DIR/etc/php-fpm.d/www.conf
         # php-fpm config
@@ -87,8 +86,7 @@ function install_php {
         echo 'PHP 5.6'
     fi
     # for php-fpm
-    if [ $VERS -ge 7 ]
-    then
+    if [ $VERS -ge 7 ]; then
         cp -f ./sapi/fpm/php-fpm.service /usr/lib/systemd/system/
         sed -i 's@${prefix}@/www/server/php@' /usr/lib/systemd/system/php-fpm.service
         sed -i 's@${exec_prefix}@/www/server/php@' /usr/lib/systemd/system/php-fpm.service

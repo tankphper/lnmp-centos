@@ -187,11 +187,9 @@ function install_common {
     [ $? != 0 ] && error_exit "common dependence install err"
 
     $(echo $MYSQL_SRC | grep -q "mysql-8") && V8=1 || V8=0
-    if [[ $V8 -eq 1 && $VERS -eq 7 && ! -f /etc/scl/prefixes/devtoolset-7 ]]
-    then
+    if [[ $V8 -eq 1 && $VERS -eq 7 && ! -f /etc/scl/prefixes/devtoolset-7 ]]; then
         read -p "Mysql $MYSQL_VERSION require devtoolset on Centos 7, do you want to install? (Y/N) " CONFIRM
-        if [[ $CONFIRM == "Y" ]]
-        then
+        if [[ $CONFIRM == "Y" ]]; then
             install_devtool
         else
             exit
