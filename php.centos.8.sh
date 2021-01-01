@@ -56,7 +56,8 @@ function install_php {
         --enable-mysqlnd --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
         --with-iconv --with-mcrypt=/usr \
         --with-gd --with-freetype-dir --with-jpeg-dir --with-png-dir --enable-gd-native-ttf \
-        --with-zlib --with-libxml-dir=/usr --with-curl --with-openssl --with-xmlrpc --with-gettext \
+        --with-zlib --with-curl --with-openssl --with-xmlrpc --with-gettext \
+        --enable-xml --with-libxml-dir=/usr \
         --enable-inline-optimization \
         --enable-mbregex --enable-mbstring --enable-ftp --enable-intl --enable-xml --enable-bcmath \
         --enable-exif --enable-shmop --enable-pcntl --enable-soap --enable-sockets --enable-zip --enable-opcache \
