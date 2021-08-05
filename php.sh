@@ -16,7 +16,7 @@ ICONV_DOWN="http://ftp.gnu.org/gnu/libiconv/libiconv-1.16.tar.gz"
 ICONV_SRC="libiconv-1.16"
 ICONV_LOCK="$LOCK_DIR/php.iconv.lock"
 # php-7.2.x need compile https://pecl.php.net/get/mcrypt-1.0.1.tgz by handle and add mcrypt.so to php.ini
-MCRYPT_DOWN="https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz"
+MCRYPT_DOWN="https://github.com/tankphper/lnmp-files/raw/master/libmcrypt-2.5.8.tar.gz"
 MCRYPT_SRC="libmcrypt-2.5.8"
 MCRYPT_LOCK="$LOCK_DIR/mcrypt.lock"
 # common dependency for php
