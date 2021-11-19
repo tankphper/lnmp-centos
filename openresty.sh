@@ -10,7 +10,7 @@ PCRE_DOWN="https://ftp.pcre.org/pub/pcre/pcre-8.43.tar.gz"
 PCRE_SRC="pcre-8.43"
 PCRE_LOCK="$LOCK_DIR/pcre.lock"
 # openresty source
-OPENRESTY_VERSION="openresty-1.19.3.1"
+OPENRESTY_VERSION="openresty-1.19.9.1"
 OPENRESTY_FILE="$OPENRESTY_VERSION$SRC_SUFFIX"
 OPENRESTY_DOWN="https://openresty.org/download/$OPENRESTY_FILE"
 OPENRESTY_DIR="$INSTALL_DIR/$OPENRESTY_VERSION"
