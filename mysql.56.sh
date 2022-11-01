@@ -63,6 +63,8 @@ function install_mysql {
     [ ! -d $INSTALL_DIR/etc ] && mkdir $INSTALL_DIR/etc
     cp -f $ROOT/mysql.56.conf/my.cnf $INSTALL_DIR/etc/my.cnf
     ln -sf $INSTALL_DIR/etc/my.cnf /etc/my.cnf
+    # mysql.sock file dir
+    mkdir -p /var/run/mysql && chmod 777 /var/run/mysql
     # add to env path
     echo "PATH=\$PATH:$INSTALL_DIR/mysql/bin" > /etc/profile.d/mysql.sh
     # add to active lib
@@ -84,10 +86,6 @@ function install_mysql {
 
     # set root password for mysql-5.6.x 
     $INSTALL_DIR/mysql/bin/mysqladmin -u root password "password"
-    
-    # mysql.sock dir
-    mkdir -p /var/lib/mysql
-    [ -f /tmp/mysql.sock ] && ln -sf /tmp/mysql.sock /var/lib/mysql/
     
     echo  
     echo "install mysql complete."
