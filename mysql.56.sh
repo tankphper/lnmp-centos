@@ -64,7 +64,7 @@ function install_mysql {
     cp -f $ROOT/mysql.56.conf/my.cnf $INSTALL_DIR/etc/my.cnf
     ln -sf $INSTALL_DIR/etc/my.cnf /etc/my.cnf
     # mysql.sock file dir
-    mkdir -p /var/run/mysql && chmod 777 /var/run/mysql
+    mkdir -p /var/lib/mysql && chmod 777 /var/lib/mysql
     # add to env path
     echo "PATH=\$PATH:$INSTALL_DIR/mysql/bin" > /etc/profile.d/mysql.sh
     # add to active lib

@@ -79,7 +79,7 @@ function install_mysql {
     cp -f $ROOT/mysql.8.conf/my.cnf $INSTALL_DIR/etc/my.cnf
     ln -sf $INSTALL_DIR/etc/my.cnf /etc/my.cnf
     # mysql.sock file dir
-    mkdir -p /var/run/mysql && chmod 777 /var/run/mysql
+    mkdir -p /var/lib/mysql && chmod 777 /var/lib/mysql
     # db file user:group
     #[ ! -d $INSTALL_DIR/mysql/data ] && mkdir $INSTALL_DIR/mysql/data
     #chown -hR mysql:mysql $INSTALL_DIR/mysql/data

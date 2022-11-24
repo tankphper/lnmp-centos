@@ -81,6 +81,8 @@ function install_mysql {
     [ ! -d $INSTALL_DIR/etc ] && mkdir $INSTALL_DIR/etc
     cp -f $ROOT/mysql.8.conf/my.cnf $INSTALL_DIR/etc/my.cnf
     ln -sf $INSTALL_DIR/etc/my.cnf /etc/my.cnf
+    # mysql.sock file dir
+    mkdir -p /var/lib/mysql && chmod 777 /var/lib/mysql
     # db file user:group
     #[ ! -d $INSTALL_DIR/mysql/data ] && mkdir $INSTALL_DIR/mysql/data
     #chown -hR mysql:mysql $INSTALL_DIR/mysql/data
@@ -112,10 +114,6 @@ function install_mysql {
 
     # init empty password, set root password like this for mysql-5.7.x and mysql-8.0.x
     mysql -u root -e "use mysql;alter user 'root'@'localhost' identified by 'password'"
-
-    # mysql.sock dir
-    mkdir -p /var/lib/mysql
-    [ -f /tmp/mysql.sock ] && ln -sf /tmp/mysql.sock /var/lib/mysql/
 
     echo
     echo "install mysql complete."
