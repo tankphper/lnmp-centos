@@ -11,7 +11,7 @@ function detect {
 }
 
 while ((++i)); do
-    if ((i>4)); then
+    if ((i>6)); then
         break
     fi
     detect
