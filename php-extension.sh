@@ -101,6 +101,24 @@ function add_mcrypt {
     echo_ini mcrypt
 }
 
+# php-7.x requried
+function add_xlswriter {
+    local XLSWRITER_VER=${EXT_VER:-"1.5.5"}
+    cd $SRC_DIR
+    [ ! -f xlswriter.tar.gz ] && wget --no-check-certificate https://pecl.php.net/get/xlswriter-$XLSWRITER_VER.tgz -O xlswriter.tar.gz
+    [ ! -d xlswriter ] && mkdir xlswriter
+    tar -zxvf xlswriter.tar.gz -C xlswriter --strip-components=1
+    cd xlswriter
+    phpize
+    ./configure --with-php-config=/www/server/php/bin/php-config --enable-reader
+    [ $? != 0 ] && error_exit "xlswriter configure err"
+    make
+    [ $? != 0 ] && error_exit "xlswriter make err"
+    make install
+    [ $? != 0 ] && error_exit "xlswriter make install err"
+    echo_ini xlswriter
+}
+
 # install error function
 function error_exit {
     echo 
