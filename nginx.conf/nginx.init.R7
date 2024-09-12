@@ -1,0 +1,20 @@
+[Unit]
+Description=Nginx - high performance web server
+Documentation=http://nginx.org/en/docs/
+After=network.target remote-fs.target nss-lookup.target
+# service config
+[Service]
+Type=forking
+# pid path need same to nginx.conf 
+PIDFile=/www/server/nginx/logs/nginx.pid
+# check before start
+ExecStartPre=/www/server/nginx/sbin/nginx -t -c /www/server/nginx/conf/nginx.conf
+# start
+ExecStart=/www/server/nginx/sbin/nginx -c /www/server/nginx/conf/nginx.conf
+# restart
+ExecReload=/bin/kill -s HUP $MAINPID
+# close
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target
