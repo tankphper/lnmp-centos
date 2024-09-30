@@ -217,6 +217,8 @@ function install_libzip {
     echo
     echo "install libzip complete."
     touch $LIBZIP_LOCK
+
+    error_exit "run as root: export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib64/pkgconfig"
 }
 
 # install common dependency
