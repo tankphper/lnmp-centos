@@ -1,4 +1,4 @@
-# * * * * * /usr/bin/sh /www/server/mysql.monitor.sh >> /var/log/mysql.monitor.log
+# * * * * * /usr/bin/sh /www/server/shell/mysql.monitor.sh >> /var/log/mysql.monitor.log
 # detect mysqld status
 function detect {
     RESULT=`systemctl status mysqld | grep "Active*"`
