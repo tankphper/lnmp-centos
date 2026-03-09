@@ -207,13 +207,14 @@ function install_oniguruma {
 
 # install common dependency
 # ifconfig command depend net-tools
+# sqlite-devel or libsqlite3x-devel
 # php user:group is www:www
 function install_common {
     [ -f $COMMON_LOCK ] && return
     # iptables-services for Centos 7 and Centos 8
     yum install -y sudo wget gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel \
         freetype-devel libxml2-devel libjpeg-devel libpng-devel openssl-devel \
-        libsqlite3x-devel libtool libzip-devel \
+        libsqlite3x-devel libtool libzip-devel sqlite-devel \
 	curl-devel patch ncurses-devel bzip2 libcap-devel diffutils \
         bison icu libicu libicu-devel net-tools psmisc vim vim-enhanced \
         zip unzip telnet tcpdump ipset lsof iptables iptables-services
