@@ -41,7 +41,7 @@ function install_openresty {
     ln -sf $OPENRESTY_DIR/nginx/sbin/nginx /usr/local/bin/nginx
     # default web dir
     [ ! -d /www/web ] && mkdir -p /www/web
-    [ -d /www/web ] && chown -h www:www /www/web
+    #[ -d /www/web ] && chown -h www:www /www/web
     # cp default conf and tp rewrite rule 
     cp -f $ROOT/nginx.conf/nginx.conf $OPENRESTY_DIR/nginx/conf/nginx.conf
     cp -f $ROOT/nginx.conf/rule.conf $OPENRESTY_DIR/nginx/conf/rewrite/rule.conf

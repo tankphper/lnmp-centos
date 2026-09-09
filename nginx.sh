@@ -57,7 +57,8 @@ function install_nginx {
     # for nginx temp
     mkdir -p $NGINX_DIR/temp
     # default web dir
-    [ -d /www/web ] && chown -h www:www /www/web
+    [ ! -d /www/web ] && mkdir -p /www/web
+    #[ -d /www/web ] && chown -h www:www /www/web
     # cp default conf and tp rewrite rule 
     cp -f $ROOT/nginx.conf/nginx.conf $INSTALL_DIR/nginx/conf/nginx.conf
     cp -f $ROOT/nginx.conf/rule.conf $INSTALL_DIR/nginx/conf/rewrite/rule.conf
