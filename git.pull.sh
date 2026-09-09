@@ -4,10 +4,21 @@ export PATH
 
 TIME=`echo $(date +%Y-%m-%d" "%H:%M:%S)`
 
-ROOT1='/www/web/frant'
-FILE1=$ROOT1/runtime/logs/pull.log
-[ -e $FILE1 ] || touch $FILE1 && chown www:www $FILE1
-echo '' >> $FILE1
-echo $TIME >> $FILE1
-echo $ROOT1 >> $FILE1
-cd $ROOT1 && git pull >> $FILE1
+declare -A CONFIG
+
+CONFIG["/www/web/frant"]="/www/web/frant/runtime/logs/pull.log"
+
+for ROOT in "${!CONFIG[@]}"; do
+    FILE="${CONFIG[$ROOT]}"
+
+    if [ ! -e "$FILE" ]; then
+        touch "$FILE"
+        chown www:www "$FILE"
+    fi
+
+    echo '' >> "$FILE"
+    echo "$TIME" >> "$FILE"
+    echo "$ROOT" >> "$FILE"
+
+    cd "$ROOT" && git pull >> "$FILE" 2>&1
+done
