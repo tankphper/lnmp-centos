@@ -11,6 +11,14 @@ CONFIG["/www/web/frant"]="/www/web/frant/runtime/logs/pull.log"
 for ROOT in "${!CONFIG[@]}"; do
     FILE="${CONFIG[$ROOT]}"
 
+    if [ -f "$FILE" ]; then
+        FILE_SIZE=$(du -k "$FILE" | cut -f1)
+        if [ "$FILE_SIZE" -gt 20480 ]; then
+            > "$FILE"
+            echo "$TIME - 日志超过20M，已自动清空。" >> "$FILE"
+        fi
+    fi
+
     if [ ! -e "$FILE" ]; then
         touch "$FILE"
         chown www:www "$FILE"
