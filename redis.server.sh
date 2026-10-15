@@ -36,6 +36,7 @@ function install_redis {
     sed -i 's@^# requirepass foobared@requirepass password@' $CONF_DIR/redis.conf
     sed -i 's@^# rename-command CONFIG ""@rename-command CONFIG ""@' $CONF_DIR/redis.conf
     sed -i 's@^dbfilename dump.rdb@dbfilename redis.rdb@' $CONF_DIR/redis.conf
+    sed -i 's@^logfile ""@logfile "/var/log/redis.log"@' $CONF_DIR/redis.conf
     mkdir -p /www/data
     sed -i 's@^dir ./@dir /www/data/@' $CONF_DIR/redis.conf
     if [ $VERS -ge 7 ]; then
