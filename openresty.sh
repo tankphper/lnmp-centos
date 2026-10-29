@@ -29,7 +29,16 @@ function install_openresty {
     cd $OPENRESTY_VERSION
     make clean > /dev/null 2>&1
     sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' auto/cc/gcc
-    ./configure --user=www --group=www --prefix=$OPENRESTY_DIR
+    ./configure --user=www --group=www --prefix=$OPENRESTY_DIR \
+        --with-http_stub_status_module \
+        --with-http_gzip_static_module \
+        --with-http_realip_module \
+        --with-http_ssl_module \
+        --with-http_image_filter_module \
+        --with-stream \
+        --with-stream_realip_module \
+        --with-stream_ssl_module \
+        --with-stream_ssl_preread_module
     [ $? != 0 ] && error_exit "openresty configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "openresty make err"
@@ -101,7 +110,16 @@ function add_module {
     git clone http://github.com/wandenberg/nginx-push-stream-module.git
     cd $OPENRESTY_VERSION
     ./configure --user=www --group=www --prefix=$OPENRESTY_DIR \
-           --add-module=../nginx-push-stream-module
+        --with-http_stub_status_module \
+        --with-http_gzip_static_module \
+        --with-http_realip_module \
+        --with-http_ssl_module \
+        --with-http_image_filter_module \
+        --with-stream \
+        --with-stream_realip_module \
+        --with-stream_ssl_module \
+        --with-stream_ssl_preread_module \
+        --add-module=../nginx-push-stream-module
     [ $? != 0 ] && error_exit "openresty configure err"
     make -j $CPUS
     [ $? != 0 ] && error_exit "openresty make err"
