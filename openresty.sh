@@ -28,7 +28,7 @@ function install_openresty {
     tar -zxvf $OPENRESTY_FILE
     cd $OPENRESTY_VERSION
     make clean > /dev/null 2>&1
-    sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' auto/cc/gcc
+    sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' bundle/nginx-*/auto/cc/gcc
     ./configure --user=www --group=www --prefix=$OPENRESTY_DIR \
         --with-http_stub_status_module \
         --with-http_gzip_static_module \
