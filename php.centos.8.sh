@@ -104,7 +104,7 @@ function install_php {
     # for php-fpm
     if [ $VERS -ge 7 ]; then
         cp -f ./sapi/fpm/php-fpm.service /usr/lib/systemd/system/
-        sed -i "s@$INSTALL_DIR/$PHP_DIR@/www/server/php@" /usr/lib/systemd/system/php-fpm.service
+        sed -i "s@$INSTALL_DIR/$PHP_DIR@$INSTALL_DIR/php@" /usr/lib/systemd/system/php-fpm.service
         systemctl daemon-reload
         systemctl start php-fpm.service
         systemctl enable php-fpm.service
